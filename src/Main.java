@@ -1,35 +1,64 @@
 
-
 public class Main {
-    public static void main(String[] arg){
+    int i = 0;
+    public Main() {
+        System.out.println(i);
+    }
+    public void print(){
+        System.out.println("Test");
+    }
 
-        System.out.println();
-
-        for (int i = 0; i<100 ;i++){
+    public static void main(String[] arg) {
+        //main是静态的，为什么可以在这里面new不是静态的类（包括自身的类）？因为构造函数（构造器）是静态的吗？
+        //和new a = new Main();有什么去区别？
+        //new Main();
+        for (int i = 0; i < 100; i++) {
             System.out.println(Thread.currentThread().getName() + " " + i);
-            if(20 == i){
-                new MyThread().start();
-                new MyThread().start();
+            if (20 == i) {
+                //共享k
+                MyThread2 a = new MyThread2();
+                new Thread(a, "新线程1").start();
+                new Thread(a, "新线程2").start();
             }
-        }
+
+//        for (int i = 0; i<100 ;i++){
+//            System.out.println(Thread.currentThread().getName() + " " + i);
+//            if(20 == i){
+                  //不共享k
+//                new MyThread1().start();
+//                new MyThread1().start();
+//            }
+//        }
 //        production a = new production();
 //        new Thread(a).start();
-       // Object[] a= {1,2,3,5,4,8,6,7};
+            // Object[] a= {1,2,3,5,4,8,6,7};
 //        perm b = new perm(a,1,8);
 //        System.out.println( a[0]);
 //        test2 a = new test2(String.valueOf("1946"));
 //        System.out.println(a.isBornBoomer());
 //        System.out.println(String.valueOf("1946"));
+        }
+    }
+}
+
+//多线程,implements Runnable
+class MyThread2 implements Runnable{
+    private int k;
+    public void run(){
+        for (;k<100;k++){
+            System.out.println(Thread.currentThread().getName()
+            + " " + k);
+        }
     }
 }
 
 //多线程，extends Tread
-class MyThread extends Thread{
-    private int i;
+class MyThread1 extends Thread{
+    private int k;
     public void run(){
         try{
-            for (;i < 100;i++){
-                System.out.println(getName() + " " + i);
+            for (; k < 100; k++){
+                System.out.println(getName() + " " + k);
                 //有sleep()就要try catch
                 sleep(10);
              }
