@@ -1,5 +1,8 @@
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     int i = 0;
@@ -12,6 +15,14 @@ public class Main {
 
     public static void main(String[] arg) {
 
+        Production production = new Production();
+        new production_Thread1("生产者",production).start();
+        new production_Thread2("消费者1",production).start();
+        new production_Thread2("消费者2",production).start();
+        new production_Thread2("消费者3",production).start();
+//        Account acct = new Account("1234567",1000);
+//        new DrawThread("甲",acct,800).start();
+//        new DrawThread("乙",acct,800).start();
 
         //main是静态的，为什么可以在这里面new不是静态的类（包括自身的类）？因为构造函数（构造器）是静态的吗？
         //和new a = new Main();有什么去区别？
@@ -57,25 +68,25 @@ public class Main {
 //            }
 //        }
 
-        for (int i = 0; i<100 ;i++){
-            System.out.println(Thread.currentThread().getName() + " " + i);
-            if(20 == i){
-                try{
-                    //不共享k
-                   // new MyThread1("低级").start();
-                    MyThread1 t1 =  new MyThread1("高级");
-                    MyThread1 t2 =  new MyThread1("低级");
-                    t1.setPriority(Thread.MAX_PRIORITY);
-                    t1.start();
-                    t2.setPriority(Thread.MIN_PRIORITY);
-                    t2.start();
-                   // t1.join();
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
-            }
-        }
+//        for (int i = 0; i<100 ;i++){
+//            System.out.println(Thread.currentThread().getName() + " " + i);
+//            if(20 == i){
+//                try{
+//                    //不共享k
+//                   // new MyThread1("低级").start();
+//                    MyThread1 t1 =  new MyThread1("高级");
+//                    MyThread1 t2 =  new MyThread1("低级");
+//                    t1.setPriority(Thread.MAX_PRIORITY);
+//                    t1.start();
+//                    t2.setPriority(Thread.MIN_PRIORITY);
+//                    t2.start();
+//                   // t1.join();
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        }
 
 //        production a = new production();
 //        new Thread(a).start();
@@ -88,9 +99,158 @@ public class Main {
         }
     }
 
+//传统线程通信
+class production_Thread1 extends Thread{
+    private Production production;
 
-//多线程，Callable,future
+    public production_Thread1(String name,Production production){
+        super(name);
+        this.production = production;
+    }
 
+    public void run(){
+        for (int i = 0; i<100 ;i++)
+            production.product();
+    }
+}
+
+class production_Thread2 extends Thread{
+    private Production production;
+
+    public production_Thread2(String name,Production production){
+        super(name);
+        this.production = production;
+    }
+
+    public void run(){
+        for (int i = 0; i<100 ;i++)
+            production.consume();
+    }
+}
+
+class Production {
+
+//    private final Lock lock = new ReentrantLock();
+//    private final Condition condition = lock.newCondition();
+
+    int MAX_PRODUCT = 100;
+    int MIN_PRODUCT = 0;
+    volatile int product = 0;
+
+    public synchronized void product() {
+        //lock.lock();
+        try {
+            if (this.product >= MAX_PRODUCT) {
+                //condition.await();
+                wait();
+                System.out.println("产品已满");
+                return;
+            }
+            this.product++;
+            System.out.println(Thread.currentThread().getName() + "生产了" + this.product + "个产品");
+            notifyAll();
+            //condition.signalAll();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+//        finally {
+//            lock.unlock();
+//        }
+    }
+
+    public synchronized void consume() {
+        //lock.lock();
+        try {
+            if (this.product <= MIN_PRODUCT) {
+                // condition.await();
+                System.out.println("缺货");
+                wait();
+                return;
+               }
+            System.out.println(Thread.currentThread().getName() + "消费了第" + this.product + "个产品");
+            this.product--;
+            notifyAll();
+            //condition.signalAll();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+//        }finally {
+//            lock.unlock();
+//        }
+        }
+    }
+}
+
+//synchronized(obj)
+class Account{
+    private String accountNo;
+    private double balance;
+    private double drawAmount;
+    public Account(){ }
+
+    public Account(String accountNo,double balance){
+        this.accountNo = accountNo;
+        this.balance  = balance;
+    }
+
+    public void setAccountNo(String accountNo){
+        this.accountNo = accountNo;
+    }
+
+    public String getAccountNo(){
+        return accountNo;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public synchronized void draw(double drawAmount){
+        if(balance >= drawAmount){
+            System.out.println(Thread.currentThread().getName() + "取钱成功！吐出钞票：" + drawAmount);
+            try {
+                Thread.sleep(1);
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            balance -= drawAmount;
+            System.out.println("\t余额为：" + balance);
+        }
+        else {
+            System.out.println(Thread.currentThread().getName() + "取钱失败！余额不足！");
+        }
+    }
+}
+
+class DrawThread extends Thread{
+    private Account account;
+    //取钱数
+    private double drawAmount;
+    public DrawThread(String name,Account account,double drawAmount){
+        super(name);
+        this.account = account;
+        this.drawAmount = drawAmount;
+    }
+
+    public void run(){
+        account.draw(drawAmount);
+        //同步代码块
+//        synchronized (account){
+//            if(account.getBalance() >= drawAmount){
+//                System.out.println(getName()+"取钱成功！吐出钞票：" + drawAmount);
+//                try {
+//                    Thread.sleep(1);
+//                }catch (InterruptedException e){
+//                    e.printStackTrace();
+//                }
+//                account.setBalance(account.getBalance() - drawAmount);
+//                System.out.println("\t余额为：" + account.getBalance());
+//            }
+//            else {
+//                System.out.println(getName() + "取钱失败！余额不足！");
+//            }
+       // }
+    }
+}
 
 //多线程,implements Runnable
 class MyThread2 implements Runnable{
@@ -127,48 +287,6 @@ class MyThread1 extends Thread{
 
 }
 
-
-class production implements Runnable{
-    int MAX_PRODUCT = 100;
-    int MIN_PRODUCT = 0;
-    volatile int product = 0;
-
-    public void run(){
-        while (true){
-            product();
-            consume();
-        }
-    }
-    public synchronized void product(){
-        if(this.product >= MAX_PRODUCT){
-            try {
-                wait();
-                System.out.println("产品已满");
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-            return;
-        }
-        this.product++;
-        System.out.println("生产了"+this.product+"个产品");
-        notifyAll();
-    }
-
-    public synchronized void consume(){
-        if (this.product <= MIN_PRODUCT){
-            try {
-                wait();
-                System.out.println("缺货");
-            }catch (InterruptedException e){
-                e.printStackTrace();
-            }
-            return;
-        }
-        System.out.println("消费了"+this.product+"个产品");
-        this.product--;
-        notifyAll();
-    }
-}
 
 //排列问题
 class perm{
