@@ -1,3 +1,5 @@
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 public class Main {
     int i = 0;
@@ -9,26 +11,72 @@ public class Main {
     }
 
     public static void main(String[] arg) {
+
+
         //main是静态的，为什么可以在这里面new不是静态的类（包括自身的类）？因为构造函数（构造器）是静态的吗？
         //和new a = new Main();有什么去区别？
         //new Main();
-        for (int i = 0; i < 100; i++) {
-            System.out.println(Thread.currentThread().getName() + " " + i);
-            if (20 == i) {
-                //共享k
-                MyThread2 a = new MyThread2();
-                new Thread(a, "新线程1").start();
-                new Thread(a, "新线程2").start();
-            }
+//    	//多线程Callable，FutureTask
+//    	FutureTask<Integer> task = new FutureTask<Integer>((Callable<Integer>)()->{
+//    	    //call()
+//    		int i = 0;
+//    		for (; i < 100; i++)
+//              System.out.println(Thread.currentThread().getName() + "的循环变量i的值：" + i);
+//    		return i;
+//    	});
+//    	for(int i = 0; i<100 ; i++){
+//    	    System.out.println(Thread.currentThread().getName() + "的循环变量i的值："+ i);
+//            if (20 == i) {
+//            	  new Thread(task,"有返回值的线程").start();
+//	    	}
+//	    }
+//	    try {
+//            System.out.println("子线程的返回值：" + task.get());
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-//        for (int i = 0; i<100 ;i++){
+//        for (int i = 0; i < 100; i++) {
 //            System.out.println(Thread.currentThread().getName() + " " + i);
-//            if(20 == i){
-                  //不共享k
-//                new MyThread1().start();
-//                new MyThread1().start();
+//            if (20 == i) {
+//                try {
+//                    //共享k
+//                    MyThread2 a = new MyThread2();
+////                  new Thread(a, "新线程1").start();
+////                  new Thread(a, "新线程2").start();
+//                    Thread t1 = new Thread(a, "新线程1");
+//                    Thread t2 = new Thread(a, "新线程2");
+//                    t2.start();
+//                    t1.start();
+//                    t1.join();
+//                    t2.sleep(1);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//
 //            }
 //        }
+
+        for (int i = 0; i<100 ;i++){
+            System.out.println(Thread.currentThread().getName() + " " + i);
+            if(20 == i){
+                try{
+                    //不共享k
+                   // new MyThread1("低级").start();
+                    MyThread1 t1 =  new MyThread1("高级");
+                    MyThread1 t2 =  new MyThread1("低级");
+                    t1.setPriority(Thread.MAX_PRIORITY);
+                    t1.start();
+                    t2.setPriority(Thread.MIN_PRIORITY);
+                    t2.start();
+                   // t1.join();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
 //        production a = new production();
 //        new Thread(a).start();
             // Object[] a= {1,2,3,5,4,8,6,7};
@@ -39,7 +87,10 @@ public class Main {
 //        System.out.println(String.valueOf("1946"));
         }
     }
-}
+
+
+//多线程，Callable,future
+
 
 //多线程,implements Runnable
 class MyThread2 implements Runnable{
@@ -55,13 +106,20 @@ class MyThread2 implements Runnable{
 //多线程，extends Tread
 class MyThread1 extends Thread{
     private int k;
+    public MyThread1(String name){
+        super(name);
+    }
     public void run(){
         try{
             for (; k < 100; k++){
                 System.out.println(getName() + " " + k);
-                //有sleep()就要try catch
+                //有sleep()抛出InterruptedException
                 sleep(10);
+                if (20 == k){
+                    Thread.yield();
+                }
              }
+
         }catch (InterruptedException e){
             e.printStackTrace();
         }
