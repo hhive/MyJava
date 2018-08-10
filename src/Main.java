@@ -20,6 +20,7 @@ public class Main {
         new production_Thread2("消费者1",production).start();
         new production_Thread2("消费者2",production).start();
         new production_Thread2("消费者3",production).start();
+
 //        Account acct = new Account("1234567",1000);
 //        new DrawThread("甲",acct,800).start();
 //        new DrawThread("乙",acct,800).start();
