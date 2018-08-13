@@ -1,25 +1,63 @@
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
+import java.util.Random;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
     int i = 0;
+
     public Main() {
         System.out.println(i);
     }
-    public void print(){
+
+    public void print() {
         System.out.println("Test");
     }
 
-    public static void main(String[] arg) {
+    public static void main(String[] arg){
+//        //线程池
+//            throws Exception{
+//        int[] arr = new int[100];
+//        Random rand = new Random();
+//        int total = 0;
+//        for (int i =0 , len = arr.length; i < len ; i++){
+//             int tmp = rand.nextInt(20);
+//             total += (arr[i] = tmp);
+//        }
+//        System.out.println(total);
+//        //创建一个通用池
+//        ForkJoinPool pool = ForkJoinPool.commonPool();
+//        Future<Integer> future = pool.submit(new CalTask(arr,0,arr.length) );
+//        System.out.println(future.get());
+//        pool.shutdown();
 
-        Production production = new Production();
-        new production_Thread1("生产者",production).start();
-        new production_Thread2("消费者1",production).start();
-        new production_Thread2("消费者2",production).start();
-        new production_Thread2("消费者3",production).start();
+//          ForkJoinPool pool = new ForkJoinPool();
+//          pool.submit(new PrintTask(0, 300));
+//          pool.awaitTermination(2, TimeUnit.SECONDS);
+//          pool.shutdown();
+//            throws Exception {
+//        //创建一个固定线程数为6的线程池
+//        ExecutorService pool = Executors.newFixedThreadPool(6);
+//        //使用lambda表达式创建Runable对象
+//        Runnable target = () -> {
+//            for (int i = 0; i < 100; i++) {
+//                System.out.println(Thread.currentThread().getName() + "的i值为：" + i);
+//            }
+//        };
+//        //向池提交两个线程
+//        pool.submit(target);
+//        pool.submit(target);
+//        //关闭线程池
+//        pool.shutdown();
+
+        /*
+         Production production = new Production();
+         new production_Thread1("生产者",production).start();
+         new production_Thread2("消费者1",production).start();
+         new production_Thread2("消费者2",production).start();
+         new production_Thread2("消费者3",production).start();
+         */
 
 //        Account acct = new Account("1234567",1000);
 //        new DrawThread("甲",acct,800).start();
@@ -28,6 +66,7 @@ public class Main {
         //main是静态的，为什么可以在这里面new不是静态的类（包括自身的类）？因为构造函数（构造器）是静态的吗？
         //和new a = new Main();有什么去区别？
         //new Main();
+
 //    	//多线程Callable，FutureTask
 //    	FutureTask<Integer> task = new FutureTask<Integer>((Callable<Integer>)()->{
 //    	    //call()
@@ -91,16 +130,105 @@ public class Main {
 
 //        production a = new production();
 //        new Thread(a).start();
-            // Object[] a= {1,2,3,5,4,8,6,7};
+        // Object[] a= {1,2,3,5,4,8,6,7};
 //        perm b = new perm(a,1,8);
 //        System.out.println( a[0]);
 //        test2 a = new test2(String.valueOf("1946"));
 //        System.out.println(a.isBornBoomer());
 //        System.out.println(String.valueOf("1946"));
+    }
+}
+
+class ThreadTest1{
+    int i = 1;
+    int num = i + 2;
+    public synchronized void num(){
+       try {
+           for (;i < num ; i++){
+               System.out.print(i);
+           }
+           i = num;
+           num = i + 1;
+           notifyAll();
+           wait();
+       }catch (InterruptedException e){
+           e.printStackTrace();
+       }
+    }
+    public synchronized void letter(){
+        try {
+            for (;i < num ; i++){
+                System.out.print(i);
+            }
+            i = num;
+            num = i + 1;
+            notifyAll();
+            wait();
+        }catch (InterruptedException e){
+            e.printStackTrace();
         }
     }
 
-//传统线程通信
+}
+
+//继承RecursiveTask<Integer>来实现“可分解”的任务（有返回值）
+class CalTask extends RecursiveTask<Integer>{
+    //每个小任务最多打印50个
+    private static final int THRESHOLD = 20;
+    private int arr[];
+    private int start;
+    private int end;
+    public CalTask(int[] arr, int start, int end){
+        this.arr = arr;
+        this.start = start;
+        this.end = end;
+    }
+    @Override
+    protected Integer compute(){
+        int sum = 0;
+        if(end - start < THRESHOLD){
+            for (int i = start ; i < end ;i++) {
+                sum += arr[i];
+            }
+            return sum;
+        }else {
+            int middle = (start + end) / 2;
+            CalTask left = new CalTask(arr,start, middle);
+            CalTask right = new CalTask(arr, middle, end);
+            left.fork();
+            right.fork();
+            return left.join()+right.join();
+        }
+    }
+}
+
+//继承RecursiveAction来实现“可分解”的任务（无返回值）
+class PrintTask extends RecursiveAction{
+    //每个小任务最多打印50个
+    private static final int THRESHOLD = 50;
+    private int start;
+    private int end;
+    public PrintTask(int start, int end){
+        this.start = start;
+        this.end = end;
+    }
+    @Override
+    protected void compute(){
+        if(end - start < THRESHOLD){
+            for (int i = start ; i < end ;i++){
+                System.out.println(Thread.currentThread().getName() + "的i值：" + i);
+            }
+        }else {
+            int middle = (start + end) / 2;
+            PrintTask left = new PrintTask(start, middle);
+            PrintTask right = new PrintTask(middle, end);
+            left.fork();
+            right.fork();
+        }
+    }
+}
+
+//传统线程通信+condition
 class production_Thread1 extends Thread{
     private Production production;
 
@@ -114,7 +242,6 @@ class production_Thread1 extends Thread{
             production.product();
     }
 }
-
 class production_Thread2 extends Thread{
     private Production production;
 
@@ -128,7 +255,6 @@ class production_Thread2 extends Thread{
             production.consume();
     }
 }
-
 class Production {
 
 //    private final Lock lock = new ReentrantLock();
@@ -139,6 +265,7 @@ class Production {
     volatile int product = 0;
 
     public synchronized void product() {
+        //lock和condition
         //lock.lock();
         try {
             if (this.product >= MAX_PRODUCT) {
@@ -264,7 +391,7 @@ class MyThread2 implements Runnable{
     }
 }
 
-//多线程，extends Tread
+//多线程，extends Thread
 class MyThread1 extends Thread{
     private int k;
     public MyThread1(String name){
