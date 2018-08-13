@@ -186,20 +186,20 @@ class Park{
                     break;
                 }
             }
-            notifyAll();
+            notify();
             wait();
             if(false == flag){
                 System.out.println(Thread.currentThread().getName() + "无法进入，车位已满，请稍后");
-                notifyAll();
+                notify();
                 wait();
             }else {
-                sleep(100);
+                sleep(new Random().nextInt(10000) + 1000);
                 System.out.println(Thread.currentThread().getName() + "离开了" + (i + 1) + "号位");
                 num--;
                 sites[k] = true;
                 notifyAll();
                 wait();
-                sleep(1000);
+                sleep(new Random().nextInt(10000) + 1000);
             }
         }catch (InterruptedException e){
             e.printStackTrace();
