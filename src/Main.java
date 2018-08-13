@@ -4,18 +4,31 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.lang.Thread.sleep;
+
 public class Main {
-    int i = 0;
+    private int i = 0;
 
     public Main() {
         System.out.println(i);
     }
 
-    public void print() {
+    public void my_print() {
         System.out.println("Test");
     }
 
     public static void main(String[] arg){
+
+        Park park = new Park();
+        new ParkThread1(park).start();
+        new ParkThread1(park).start();
+        new ParkThread1(park).start();
+        new ParkThread1(park).start();
+        new ParkThread1(park).start();
+        new ParkThread1(park).start();
+//        NumAndLetter a = new NumAndLetter();
+//        new NALThread1(a).start();
+//        new NALThread2(a).start();
 //        //线程池
 //            throws Exception{
 //        int[] arr = new int[100];
@@ -139,34 +152,175 @@ public class Main {
     }
 }
 
-class ThreadTest1{
-    int i = 1;
-    int num = i + 2;
-    public synchronized void num(){
-       try {
-           for (;i < num ; i++){
-               System.out.print(i);
-           }
-           i = num;
-           num = i + 1;
-           notifyAll();
-           wait();
-       }catch (InterruptedException e){
-           e.printStackTrace();
-       }
+class ParkThread1 extends Thread{
+    private Park park;
+
+    public ParkThread1(Park park){
+        this.park = park;
     }
-    public synchronized void letter(){
+
+    public void run(){
+        for (int i = 0; i < 100; i++)
+        park.parking();
+    }
+}
+
+class Park{
+    //    private boolean[] sites = new boolean[3];
+    //true可以停车，false不可以
+    private boolean[] sites = {true,true,true};
+    private int num = 0;
+
+    public synchronized void parking(){
+        boolean flag = false;
+        int k = 0;
+        int i = 0;
         try {
-            for (;i < num ; i++){
-                System.out.print(i);
+            for (; i < 3; i++){
+                if(true == sites[i]){
+                    k = i;
+                    System.out.println(Thread.currentThread().getName() + "停进了" + (i+1) + "号位");
+                    num++;
+                    sites[k] = false;
+                    flag = true;
+                    break;
+                }
             }
-            i = num;
-            num = i + 1;
             notifyAll();
             wait();
+            if(false == flag){
+                System.out.println(Thread.currentThread().getName() + "无法进入，车位已满，请稍后");
+                notifyAll();
+                wait();
+            }else {
+                sleep(100);
+                System.out.println(Thread.currentThread().getName() + "离开了" + (i + 1) + "号位");
+                num--;
+                sites[k] = true;
+                notifyAll();
+                wait();
+                sleep(1000);
+            }
         }catch (InterruptedException e){
             e.printStackTrace();
         }
+
+    }
+}
+
+//class Park{
+////    private boolean[] sites = new boolean[3];
+//     //true可以停车，false不可以
+//    private boolean[] sites = {true,true,true};
+//    private int num = 0;
+//
+//    public synchronized void tingche(){
+//        try {
+//            for (int i = 0; i < 3; i++){
+//                if(true == sites[i]){
+//                    System.out.println(Thread.currentThread().getName() + "停进了" + (i+1) + "号位");
+//                    num++;
+//                    sites[i] = false;
+//                    notifyAll();
+//                    wait();
+//
+//                }
+//            }
+//            if(3 == num){
+//                System.out.println("车位已满，请稍后");
+//                wait();
+//            }
+//            sleep(100);
+//        }catch (InterruptedException e){
+//            e.printStackTrace();
+//        }
+//
+//    }
+//    public synchronized void likai(){
+//        try {
+//            for (int i = 0; i < 3; i++){
+//                if(false == sites[i]){
+//                    System.out.println(Thread.currentThread().getName() + "离开了" + (i+1) + "号位");
+//                    num--;
+//                    sites[i] = true;
+//                    notifyAll();
+//                    wait();
+//
+//                }
+//            }
+//
+//            if(0 == num){
+//                System.out.println("车位全空");
+//                wait();
+//            }
+//            sleep(100);
+//        }catch (InterruptedException e){
+//            e.printStackTrace();
+//        }
+//
+//    }
+//}
+
+class NALThread1 extends Thread{
+    NumAndLetter numAndLetter;
+
+    public NALThread1(NumAndLetter numAndLetter){
+        this.numAndLetter = numAndLetter;
+    }
+    public void run(){
+        while (true){
+            if(!numAndLetter.num())
+                break;
+        }
+    }
+}
+
+class NALThread2 extends Thread{
+    private NumAndLetter numAndLetter;
+
+    public NALThread2(NumAndLetter numAndLetter){
+        this.numAndLetter = numAndLetter;
+    }
+    public void run(){
+        while (true){
+            if(!numAndLetter.letter())
+                break;
+        }
+    }
+}
+
+class NumAndLetter{
+    private int i = 1;
+    private int num = i + 2;
+    private int k = 65;
+    public synchronized boolean num(){
+       try {
+           if (i <= 52){
+               System.out.print(i);
+               System.out.print(i+1);
+               i = num;
+               num = i + 2;
+               notifyAll();
+               wait();
+          }else
+              return false;
+       }catch (InterruptedException e){
+           e.printStackTrace();
+       }
+        return true;
+    }
+    public synchronized boolean letter(){
+        try {
+            if (k<91){
+                System.out.print((char)(k++));
+                notifyAll();
+                wait();
+            }else
+                return false;
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        return true;
     }
 
 }
@@ -336,7 +490,7 @@ class Account{
         if(balance >= drawAmount){
             System.out.println(Thread.currentThread().getName() + "取钱成功！吐出钞票：" + drawAmount);
             try {
-                Thread.sleep(1);
+                sleep(1);
             }catch (InterruptedException e){
                 e.printStackTrace();
             }
