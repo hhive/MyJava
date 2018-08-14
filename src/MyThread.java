@@ -174,6 +174,7 @@ class ParkThread1 implements Runnable{
 class Park{
     //    private boolean[] sites = new boolean[3];
     //true可以停车，false不可以
+    public int test;
     private boolean[] sites = {true,true,true};
     private int num = 0;
 
