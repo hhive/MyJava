@@ -1,14 +1,7 @@
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.concurrent.*;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.*;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntUnaryOperator;
-
-import static java.lang.Thread.sleep;
 
 public class Main {
     private int i = 0;
@@ -23,7 +16,14 @@ public class Main {
 
     public static void main(String[] arg){
 
-        new splitNumAndLetter().mySplit();
+        LambdaQs lambdaQs = new LambdaQs();
+        lambdaQs.PrintForLam(lambdaQs);
+
+//        MyCollection myCollection = new MyCollection();
+//        myCollection.PrintForCollection();
+       // myCollection.PrintForIterator();
+
+//        new splitNumAndLetter().mySplit();
 
 //        new MyArray().myprint();
 
@@ -36,6 +36,98 @@ public class Main {
     }
 }
 
+interface Eatable{
+    void taste();
+}
+interface Flyable{
+    void fly(String weather);
+}
+interface Addable{
+    int add(int a, int b);
+}
+class LambdaQs{
+    public void eat(Eatable e){
+        //输出对象e
+        System.out.println(e);
+        e.taste();
+    }
+    public void drive(Flyable f){
+        System.out.println("我开：" + f);
+        f.fly("晴天");
+    }
+    public void test(Addable add){
+        System.out.println("5+3:" + add.add(5,3));
+    }
+
+    public void PrintForLam(LambdaQs lq){
+        lq.eat(()->System.out.println("苹果味道好！"));
+        lq.drive(weather -> {
+            System.out.println("今天天气是：" + weather);
+            System.out.println("直升机飞行平稳");
+        });
+        lq.test((a, b)->a + b);
+        //使用函数式接口对Lambda表达式进行强制类型转换
+        Object obj = (Runnable)()->{
+            for (int i = 0; i < 5; i++){
+                System.out.println();
+
+            }
+        };
+    }
+}
+
+class MyCollection{
+    Collection c = new ArrayList();
+    Collection books = new HashSet();
+
+    public void PrintForCollection(){
+        c.add("孙悟空");
+        c.add(6);
+        System.out.println("c的元素数：" + c.size());
+        c.remove(6);
+        System.out.println("c中是否包含“孙悟空”字符串：" + c.contains("孙悟空"));
+        c.add("Java");
+        System.out.println("c集合的元素：" + c);
+
+        books.add("Java");
+        books.add("Android");
+        System.out.println("c集合是否完全包含books集合？" + c.containsAll(books));
+        //用c集合减去books集合里的元素
+        c.removeAll(books);
+        System.out.println("c中的元素：" + c);
+        c.clear();
+        System.out.println("c中的元素：" + c);
+        //控制books集合中只剩下c集合里也包含的元素
+        books.retainAll(c);
+        System.out.println("books集合的元素：" + books);
+        books.add("q");
+        books.add("a");
+        books.add("w");
+        for (Object obj : books){
+            System.out.println(obj);
+        }
+    }
+    public void PrintForIterator(){
+        books.add("q");
+        books.add("a");
+        books.add("w");
+        //使用Lambda表达式，调用forEach()方法遍历集合
+        books.forEach(obj->System.out.println("迭代集合元素：" + obj));
+        Iterator it = books.iterator();
+        System.out.println(it.hasNext());
+        while ( it.hasNext()){
+            //it.next()返回的是Object类型
+            String book = (String)it.next();
+            System.out.println("book:" + book);
+            //使用Iterator迭代过程中，不可修改集合元素，类似books.remove(book)
+            if (book.equals("a")){
+                it.remove();
+            }
+            book = "b";
+        }
+        System.out.println(books);
+    }
+}
 
 class splitNumAndLetter{
     String zifu = "ds123d4s4dqwAw57vv58gsTg578q93JNH21dsd2445";
