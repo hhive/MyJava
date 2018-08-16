@@ -1,4 +1,5 @@
 
+import javax.swing.*;
 import java.util.*;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntUnaryOperator;
@@ -16,12 +17,13 @@ public class Main {
 
     public static void main(String[] arg){
 
-        LambdaQs lambdaQs = new LambdaQs();
-        lambdaQs.PrintForLam(lambdaQs);
+//        LambdaQs lambdaQs = new LambdaQs();
+//        lambdaQs.PrintForLam(lambdaQs);
 
-//        MyCollection myCollection = new MyCollection();
-//        myCollection.PrintForCollection();
-       // myCollection.PrintForIterator();
+        MyCollection myCollection = new MyCollection();
+        myCollection.PrintForCollection();
+        myCollection.PrintForStream();
+        //myCollection.PrintForIterator();
 
 //        new splitNumAndLetter().mySplit();
 
@@ -36,16 +38,38 @@ public class Main {
     }
 }
 
-interface Eatable{
-    void taste();
+//Set is basically the same as Collection,
+// but Set dose not allow duplicate elements
+class MySet{
+
 }
-interface Flyable{
-    void fly(String weather);
-}
-interface Addable{
-    int add(int a, int b);
-}
+
 class LambdaQs{
+    interface Eatable{
+        void taste();
+    }
+    interface Flyable{
+        void fly(String weather);
+    }
+    interface Addable{
+        int add(int a, int b);
+    }
+
+    @FunctionalInterface
+    interface Converter{
+        Integer convert(String from);
+    }
+
+    @FunctionalInterface
+    interface MyTest{
+        String test(String a , int b , int c );
+    }
+
+    @FunctionalInterface
+    interface YourTest{
+        JFrame win(String title);
+    }
+
     public void eat(Eatable e){
         //输出对象e
         System.out.println(e);
@@ -55,24 +79,48 @@ class LambdaQs{
         System.out.println("我开：" + f);
         f.fly("晴天");
     }
-    public void test(Addable add){
+    public void toAdd(Addable add){
         System.out.println("5+3:" + add.add(5,3));
     }
 
     public void PrintForLam(LambdaQs lq){
+
         lq.eat(()->System.out.println("苹果味道好！"));
         lq.drive(weather -> {
             System.out.println("今天天气是：" + weather);
             System.out.println("直升机飞行平稳");
         });
-        lq.test((a, b)->a + b);
+        lq.toAdd((a, b)->a + b);
         //使用函数式接口对Lambda表达式进行强制类型转换
         Object obj = (Runnable)()->{
             for (int i = 0; i < 5; i++){
                 System.out.println();
-
             }
         };
+    }
+    public void PrintforLamRefer(){
+        Converter converter = from -> Integer.valueOf(from);
+        Converter converter1 = Integer::valueOf;
+        Integer val = converter.convert("99");
+        //方法引用替代Lamdba表达式：引用类方法
+        //函数式接口中被实现方法的全部参数传给该类方法作为参数
+        System.out.println(val);
+
+        Converter converter2 = from -> "fkit.org".indexOf(from);
+        Converter converter3 = "fkit.org"::indexOf;
+        //indexOf 方法返回一个整数值，指出 String 对象内子字符串的开始位置。如果没有找到子字符串，则返回-1。
+        Integer value = converter3.convert("it");
+        System.out.println(value);
+
+        YourTest yt = (String a) -> new JFrame(a);
+        YourTest yt1 = JFrame::new;
+        JFrame jf = yt.win("我的窗口");
+        System.out.println(jf);
+
+        MyTest mt = (a,b,c)->a.substring(b,c);
+        MyTest mt1 = String::substring;
+        String str = mt.test("Java I Love you" , 2 , 9);
+        System.out.println(str);
     }
 }
 
@@ -127,6 +175,18 @@ class MyCollection{
         }
         System.out.println(books);
     }
+    public void PrintForStream(){
+        //stream()将集合转换成Stream
+        System.out.println(books.stream()
+        .filter(ele->((String)ele).contains("Java"))
+        .count());
+        System.out.println(books.stream()
+        .filter(ele->((String)ele).length() > 10)
+                .count());
+        //mapToInt()获取原有的Stream对应的IntStream
+        books.stream().mapToInt(ele -> ((String)ele).length())
+                .forEach(System.out::println);
+    }
 }
 
 class splitNumAndLetter{
@@ -172,6 +232,7 @@ class MyArray{
         System.out.println(Arrays.toString(arr1));
         System.out.println(arr1[1] == 3);
         int[] arr2 = {3,-4,25,16,30,18};
+        //Arrays.parallelPrefix(arr2, (left,right)->left * right);
         Arrays.parallelPrefix(arr2, new IntBinaryOperator() {
             @Override
             public int applyAsInt(int left, int right) {
