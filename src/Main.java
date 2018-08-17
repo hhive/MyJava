@@ -17,10 +17,10 @@ public class Main {
     }
 
     /**
-     *
+     * @param s The object of print
      */
-    public void myPrint() {
-        System.out.println("Test");
+    public static void myPrint(String s) {
+        System.out.println(s);
     }
 
     /**
@@ -29,13 +29,24 @@ public class Main {
      */
     public static void main(String[] arg) {
 
-        new MySet().printForEnum();
+        MyQueue myQueue = new MyQueue();
+        myQueue.printForQueue();
+//        MyList myList = new MyList();
+//        myList.printForList();
+
+//        ParentClass a = new ChildClass(4, 5, 6);
+//        ChildClass b = new ChildClass(1, 2, 3);
+//        ((ChildClass) a).childFunction(); //true
+//        a.childFunction(); //error
+//        b.parentFunction(); //true
+
+//        new MySet().printForTreeSet();
 //        LambdaQs lambdaQs = new LambdaQs();
 //        lambdaQs.PrintForLam(lambdaQs);
 
-        MyCollection myCollection = new MyCollection();
-        myCollection.printForCollection();
-        myCollection.printForStream();
+//        MyCollection myCollection = new MyCollection();
+//        myCollection.printForCollection();
+//        myCollection.printForStream();
         //myCollection.printForIterator();
 
 //        new splitNumAndLetter().mySplit();
@@ -51,9 +62,176 @@ public class Main {
     }
 }
 
+/**
+ * Operational tests on Map
+ */
+class MyMap {
+    private Map map = new HashMap();
+    /**
+     * print
+     */
+    public void printForHashMap(){
+        map.put("Java", 103);
+        map.put("Java EE", 10);
+        map.put("AJAX", 79);
+        map.put("Android", 79);
+        System.out.println(map.put("Java EE", 99));
+        System.out.println(map);
+        System.out.println("is include Java?" + map.containsKey("Java"));
+        System.out.println("is include 99?" + map.containsValue(99));
+        for (Object key : map.keySet()){
+            System.out.println(key + "-->" + map.get(key));
+        }
+        map.remove("AJAX");
+        System.out.println(map);
+    }
+}
+
+/**
+ * Operational tests on Queue
+ * The queue does not allow random access to element int the queue
+ * but ArrayDeque could
+ */
+class MyQueue {
+    //use Arrayeque as stack
+    private ArrayDeque stack = new ArrayDeque();
+
+    private ArrayDeque queue = new ArrayDeque();
+
+    /**
+     * print the test of ArrayDeque
+     */
+    public void printForStack() {
+        stack.push("Java");
+        stack.push("Java EE");
+        stack.push("Android");
+        System.out.println(stack);
+        System.out.println(stack.peek() + ",do not delete");
+        System.out.println(stack.pop() + ",delete");
+        System.out.println(stack);
+    }
+    /**
+     * print the test of ArrayDeque
+     */
+    public void printForQueue() {
+        queue.offer("Java");
+        queue.offer("Java EE");
+        queue.offer("Android");
+        System.out.println(queue);
+        System.out.println(queue.peek() + ",do not delete");
+        System.out.println(queue.pop() + ",delete");
+        System.out.println(queue);
+    }
+}
+
+/**
+ * The test of List
+ */
+class MyList {
+    //Use initialCapacity to specify the length
+    private List books = new ArrayList();
+
+    /**
+     *Operational tests on List
+     */
+    public void printForList() {
+        //ArrayList use initialCapacity to specify the length
+        ArrayList a = new ArrayList(12);
+        //add capacity
+        a.ensureCapacity(10);
+
+        books.add(new String("Java"));
+        books.add("Android");
+        books.add(new String("Java EE"));
+        System.out.println(books);
+        //Insert a new String into the second position
+        books.add(1, new String("AJAX"));
+
+        for (int i = 0; i < books.size(); i++) {
+            System.out.println(books.get(i));
+        }
+        books.remove(2);
+        System.out.println(books);
+        //Determine the position of the specified element in the List collection,
+        // print "1",indicates that it is in second place
+        //Note: it uses "new"
+        System.out.println(books.indexOf(new String("AJAX")));
+        books.set(1, new String("Java"));
+        //Intercept the first element(include) of the collection
+        // to the second element(not included) into a subset
+        System.out.println(books.subList(1, 2));
+
+//        String s = new String("s");
+//        String s1 = "s";
+//        System.out.println(s.equals(s1));
+
+        books.sort((o1, o2) -> ((String) o1).length() - ((String) o2).length());
+        System.out.println(books);
+        //Replace the element with the length of the element;
+        books.replaceAll(ele -> ((String) ele).length());
+        System.out.println(books);
+        //Comparing Iterator with listIterator,
+        // you can see that listIterator adds the function of forward iteration
+        //It needs to have elements in front of it
+        books.listIterator().hasPrevious();
+
+    }
+}
+
+/**
+ *The test of super
+ */
+class ParentClass {
+    private int i = 0;
+    private int j = 0;
+
+    /**
+     * null constructor
+     */
+//    ParentClass(){
+
+//    }
+    /**
+     *
+     * @param i test
+     * @param j test
+     */
+    ParentClass(int i, int j) {
+        this.i = i;
+        this.j = j;
+    }
+    /**
+     * test
+     */
+    public void parentFunction() {
+        System.out.println(1);
+    }
+}
+
+/**
+ *
+ */
+class  ChildClass extends ParentClass {
+    private int k;
+    ChildClass(int i, int j, int k) {
+        //If the constructor of parent class has parameters(no empty constructor),
+        //the child class must be explicitly called with "super"
+        super(i, j);
+        this.k = k;
+    }
+
+    /**
+     * test
+     */
+    public void childFunction() {
+        System.out.println(2);
+    }
+}
+
     /**
      * Set is basically the same as Collection,
      * but Set dose not allow duplicate elements
+     *
      */
 class MySet {
         /**
@@ -62,7 +240,25 @@ class MySet {
     enum Season {
         Spring, Summer, Fall, Winter
     }
-
+        /**
+         * Custom Sort of TreeSet
+         */
+    class M {
+        private int age;
+            /**
+             *
+             */
+        M(int age) {
+            this.age = age;
+        }
+            /**
+             *@return implement "toString" to print M`s object,
+             * otherwise it will print the address of M`s object
+             */
+         public String toString() {
+             return "M[age:" + age + "]";
+         }
+    }
         /**
          * print the test of EnumSet
          */
@@ -72,6 +268,24 @@ class MySet {
          EnumSet es5 = EnumSet.complementOf(es4);
          System.out.println(es5);
      }
+        /**
+         * print the test of TreeSet
+         * It implements SortSet
+         */
+      public void printForTreeSet() {
+          //Custom Sort of TreeSet
+          TreeSet ts = new TreeSet((o1, o2) -> {
+              M m1 = (M) o1;
+              M m2 = (M) o2;
+              //Determine the size according to the "age" attribute
+              // of the M`s object,age bigger M`s object is smaller
+              return m1.age > m2.age ? -1 : m1.age < m2.age ? 1 : 0;
+          });
+          ts.add(new M(5));
+          ts.add(new M(-3));
+          ts.add(new M(9));
+          System.out.println(ts);
+      }
     }
 
 /**
@@ -332,7 +546,7 @@ class SplitNumAndLetter {
     private int j = 0;
 
     /**
-     *
+     * separate numbers and letters
      */
    public void mySplit() {
        for (int i = 0; i < zifu.length(); i++) {

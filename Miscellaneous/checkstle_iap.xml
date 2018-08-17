@@ -50,8 +50,8 @@
         </module>
         <!-- 检查类和接口的javadoc。默认不检查author和version tags -->
         <module name="JavadocType"/>
-        <!-- 检查变量的javadoc -->
-        <module name="JavadocVariable"/>
+        <!--&lt;!&ndash; 检查变量的javadoc &ndash;&gt;-->
+        <!--<module name="JavadocVariable"/>-->
         <!-- 检查javadoc的格式 -->
         <module name="JavadocStyle">
            <property name="checkFirstSentence" value="false"/>
@@ -114,7 +114,7 @@
 
         <!-- import检查-->
         <!-- 避免使用* -->
-        <module name="AvoidStarImport"/>
+        <!--<module name="AvoidStarImport"/>-->
         <!-- 检查是否从非法的包中导入了类 -->
         <module name="IllegalImport"/>
         <!-- 检查是否导入了多余的包 -->
