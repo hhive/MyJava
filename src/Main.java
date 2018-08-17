@@ -85,6 +85,9 @@ class MyMap {
             System.out.println(key + "-->" + map.get(key));
         }
         map.remove("AJAX");
+        map.merge("Java", 10, (oldVal, param) -> (Integer) oldVal + (Integer) param);
+        System.out.println(map);
+        map.computeIfPresent("Java", (key, value) -> ((String) key).length());
         System.out.println(map);
     }
 }
@@ -465,6 +468,13 @@ class LambdaQs implements MyInterface {
 class MyCollection {
     private Collection c = new ArrayList();
     private Collection books = new HashSet();
+    //Synchronous control
+    private Collection c1 = Collections.synchronizedCollection(new ArrayList());
+    private List list = Collections.synchronizedList(new ArrayList());
+    private Set s = Collections.synchronizedSet(new HashSet());
+    private Map m = Collections.synchronizedMap(new HashMap());
+
+
 
     /**
      *
