@@ -29,8 +29,10 @@ public class Main {
      */
     public static void main(String[] arg) {
 
-        MyQueue myQueue = new MyQueue();
-        myQueue.printForQueue();
+        MyMap myMap = new MyMap();
+        myMap.printForHashMap();
+//        MyQueue myQueue = new MyQueue();
+//        myQueue.printForQueue();
 //        MyList myList = new MyList();
 //        myList.printForList();
 
@@ -70,7 +72,7 @@ class MyMap {
     /**
      * print
      */
-    public void printForHashMap(){
+    public void printForHashMap() {
         map.put("Java", 103);
         map.put("Java EE", 10);
         map.put("AJAX", 79);
@@ -79,7 +81,7 @@ class MyMap {
         System.out.println(map);
         System.out.println("is include Java?" + map.containsKey("Java"));
         System.out.println("is include 99?" + map.containsValue(99));
-        for (Object key : map.keySet()){
+        for (Object key : map.keySet()) {
             System.out.println(key + "-->" + map.get(key));
         }
         map.remove("AJAX");
