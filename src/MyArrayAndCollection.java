@@ -12,8 +12,8 @@ public class MyArrayAndCollection {
 
     public static void main(String[] arg) {
 
-        MyMap myMap = new MyMap();
-        myMap.printForHashMap();
+//        MyMap myMap = new MyMap();
+//        myMap.printForHashMap();
 //        MyQueue myQueue = new MyQueue();
 //        myQueue.printForQueue();
 //        MyList myList = new MyList();
@@ -36,7 +36,7 @@ public class MyArrayAndCollection {
 
 //        new splitNumAndLetter().mySplit();
 
-//        new MyArray().myprint();
+//        new MyArray().myPrint();
 
     }
 }
@@ -525,7 +525,7 @@ class MyArray {
     /**
      *
      */
-    public void myprint() {
+    public void myPrint() {
         String[] strings1 = {"Hello"};
         System.out.println(d[1][3]);
         int[] arr1 = {3, -4, 25, 16, 30, 18};
