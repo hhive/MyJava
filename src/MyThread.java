@@ -159,6 +159,9 @@ public class MyThread {
     }
 }
 
+/**
+ * test1 for Thread
+ */
 class ParkThread1 implements Runnable{
     private Park park;
 

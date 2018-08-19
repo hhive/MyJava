@@ -1,5 +1,8 @@
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntUnaryOperator;
 import javax.swing.*;
@@ -8,9 +11,22 @@ import java.util.*;
 /**
  * Main
  */
-public class MyArrayAndCollection {
+public final class MyArrayAndCollection {
 
+    /**
+     * Constructor
+     */
+    private MyArrayAndCollection() {
+        System.out.println("test");
+    }
+    /**
+     *
+     * @param arg test
+     */
     public static void main(String[] arg) {
+
+        GoLang goLang = new GoLang();
+        goLang.chess(goLang);
 
 //        MyMap myMap = new MyMap();
 //        myMap.printForHashMap();
@@ -41,6 +57,72 @@ public class MyArrayAndCollection {
     }
 }
 
+/**
+ * Test1 for Array, Gomoku
+ */
+class GoLang {
+    private final int boardSize = 15;
+    private String[][] checkerboard = new String[boardSize][boardSize];
+
+    /**
+     * initial check board
+     */
+    GoLang() {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                checkerboard[i][j] = "✖ ";
+            }
+        }
+    }
+    /**
+     * print the check board
+     */
+    public void printCheckBoard() {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                System.out.print(checkerboard[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Playing chess
+     * @param goLang The object of GoLang
+     */
+    public void chess(GoLang goLang) {
+        String[] posStrArr;
+        int xPos;
+        int yPos;
+        goLang.printCheckBoard();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String inputstr = null;
+        System.out.println("请输入下x，y的坐标（1号）:");
+        try {
+            while ((inputstr = br.readLine()) != null){
+                posStrArr = inputstr.split(",");
+                xPos = Integer.parseInt(posStrArr[0]);
+                yPos = Integer.parseInt(posStrArr[1]);
+                goLang.checkerboard[yPos - 1 ][xPos - 1] = "❤ ";
+                goLang.printCheckBoard();
+                System.out.println("请输入下x，y的坐标（2号:）");
+                if ((inputstr = br.readLine()) != null) {
+                    posStrArr = inputstr.split(",");
+                    xPos = Integer.parseInt(posStrArr[0]);
+                    yPos = Integer.parseInt(posStrArr[1]);
+                    goLang.checkerboard[yPos - 1 ][xPos - 1] = "★ ";
+                    goLang.printCheckBoard();
+                } else {
+                    break;
+                }
+                System.out.println("请输入下x，y的坐标（1号）:");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+}
 /**
  * Operational tests on Map
  * Implement class: HashMap, Hashtable(Properties), LinkedHashMap,
