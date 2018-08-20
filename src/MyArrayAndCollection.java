@@ -12,7 +12,6 @@ import java.util.*;
  * Main
  */
 public final class MyArrayAndCollection {
-
     /**
      * Constructor
      */
@@ -26,7 +25,9 @@ public final class MyArrayAndCollection {
     public static void main(String[] arg) {
 
         GoLang goLang = new GoLang();
-        goLang.chess(goLang);
+        goLang.printCheckBoard();
+        new ThreadForChess1(goLang).start();
+        new ThreadForChess1(goLang).start();
 
 //        MyMap myMap = new MyMap();
 //        myMap.printForHashMap();
@@ -58,11 +59,36 @@ public final class MyArrayAndCollection {
 }
 
 /**
+ *
+ */
+class ThreadForChess1 extends Thread {
+    private GoLang goLang;
+
+    /**
+     *
+     */
+    ThreadForChess1(GoLang goLang) {
+        this.goLang = goLang;
+    }
+    /**
+     *
+     */
+    public void run() {
+        while (!goLang.chess(goLang)) {
+            continue;
+        }
+    }
+}
+/**
  * Test1 for Array, Gomoku
  */
 class GoLang {
+    private int xPos;
+    private int yPos;
+    private int role = 1;
     private final int boardSize = 15;
-    private String[][] checkerboard = new String[boardSize][boardSize];
+    private String[][] chessboard = new String[boardSize][boardSize];
+    private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     /**
      * initial check board
@@ -70,9 +96,13 @@ class GoLang {
     GoLang() {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                checkerboard[i][j] = "✖ ";
+                chessboard[i][j] = "✖ ";
             }
         }
+        chessboard[5][6] = "❤ ";
+        chessboard[6][7] = "❤ ";
+        chessboard[7][8] = "❤ ";
+        chessboard[8][9] = "❤ ";
     }
     /**
      * print the check board
@@ -80,49 +110,179 @@ class GoLang {
     public void printCheckBoard() {
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                System.out.print(checkerboard[i][j]);
+                System.out.print(chessboard[i][j]);
             }
             System.out.println();
         }
     }
-
+    /**
+     * Adjust who is win
+     * @return return
+     * @param symbol pieces
+     * private boolean checkWin() {//检测当前是否由五子连线的方法，简述一下，这个方法其实很简单，
+     *               只要我们在每一次落子的时候检查是否由五子连线就可以确保一旦有人胜出，我们就可以马上发现。先检查横线和竖线，再检查左右斜线。
+     *
+     *     boolean flag = false; //设置的标志，当由五子连线时就返回flag=false
+     *     int count = 1;        //计数当前由几颗棋子相连
+     *     int symbol = chessboard[x][y];
+     *     int i = 1;
+     *
+     *     while(((x+i)<16)&&symbol == chessboard[x+i][y]) {
+     *         count++;
+     *         i++;
+     *         }
+     *     i = 1;
+     *     while(((x-i)>=1)&&symbol == chessboard[x-i][y]) {
+     *         count++;
+     *         i++;
+     *         }
+     *     if(count>=5)
+     *         {flag = true;}
+     *     //Other direction
+     *     int count2 = 1;
+     *     int i2 = 1;
+     *     while(((y+i2)<16) && symbol == chessboard[x][y+i2]) {
+     *         count2++;
+     *         i2++;
+     *         }
+     *     i = 1;
+     *     while(((y-i2)>=1)&&symbol == chessboard[x][y-i2]) {
+     *         count2++;
+     *         i2++;
+     *         }
+     *     if(count2>=5)
+     *         {flag = true;}
+     *
+     *     int count3 = 1;
+     *     int i3 = 1;
+     *     while(((y-i3)>=1)&&((x+i3)<16)&&symbol == chessboard[x+i3][y-i3]) {
+     *         count3++;
+     *         i3++;
+     *         }
+     *     i = 1;
+     *     while(((x-i3)>=1)&&((y+i3)<16)&&symbol == chessboard[x-i3][y+i3]) {
+     *         count3++;
+     *         i3++;
+     *         }
+     *     if(count3>=5)
+     *         {flag = true;}
+     *
+     *     int count4 = 1;
+     *     int i4 = 1;
+     *     while(((y-i4)>=1)&&((x-i4)>=1)&&symbol == chessboard[x-i4][y-i4]) {
+     *         count4++;
+     *         i4++;
+     *         }
+     *     i = 1;
+     *     while(((x+i4)<16)&&((y+i4)<16)&&symbol == chessboard[x+i4][y+i4]) {
+     *         count4++;
+     *         i4++;
+     *         }
+     *     if(count4>=5)
+     *         {flag = true;}
+     *
+     *     return flag;
+     *
+     *    }
+     * }
+     */
+    private Boolean checkWin(String symbol) {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (symbol == chessboard[i][j]) {
+                    if (j <= 10 && symbol == chessboard[i][j + 1] && symbol == chessboard[i][j + 2]
+                            && symbol == chessboard[i][j + 3] && symbol == chessboard[i][j + 4]) {
+                            return true;
+                    }
+                    if (i <= 10 && symbol == chessboard[i + 1][j] && symbol == chessboard[i + 2][j]
+                            && symbol == chessboard[i + 3][j] && symbol == chessboard[i + 4][j]) {
+                        return true;
+                    }
+                    if (i <= 10 && j <= 10 && symbol == chessboard[i + 1][j + 1] && symbol == chessboard[i + 2][j + 2]
+                            && symbol == chessboard[i + 3][j + 3] && symbol == chessboard[i + 4][j + 4]) {
+                        return true;
+                    }
+                    if (i <= 10 && j >= 4 && symbol == chessboard[i + 1][j - 1] && symbol == chessboard[i + 2][j - 2]
+                            && symbol == chessboard[i + 3][j - 3] && symbol == chessboard[i + 4][j + 4]) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * Input validity judgement
+     * @param inputStr input
+     * @return return
+     */
+    private boolean inputValidity(String inputStr) {
+        String[] posStrArr;
+            try {
+                posStrArr = inputStr.split(",");
+                if (posStrArr[0].charAt(0) - 48 >= 1
+                        && posStrArr[0].charAt(0) - 48 <= 15
+                        && posStrArr[1].charAt(0) - 48 >= 1
+                        && posStrArr[1].charAt(0) - 48 <= 15) {
+                    xPos = Integer.parseInt(posStrArr[0]);
+                    yPos = Integer.parseInt(posStrArr[1]);
+                    return true;
+                } else {
+                    System.out.println("Illegal input,Please input number between 1~15");
+                    return false;
+                }
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Illegal input,Please input number between 1~15;\n" + e);
+                return false;
+            }
+    }
     /**
      * Playing chess
      * @param goLang The object of GoLang
+     * @return return
      */
-    public void chess(GoLang goLang) {
-        String[] posStrArr;
-        int xPos;
-        int yPos;
-        goLang.printCheckBoard();
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String inputstr = null;
-        System.out.println("请输入下x，y的坐标（1号）:");
+    public synchronized boolean chess(GoLang goLang) {
+        String symbol;
+        if (3 == role) {
+            return true;
+        }
+        System.out.println("Please enter the coordinates of x,y" + "（" + role + "）" + ":");
         try {
-            while ((inputstr = br.readLine()) != null){
-                posStrArr = inputstr.split(",");
-                xPos = Integer.parseInt(posStrArr[0]);
-                yPos = Integer.parseInt(posStrArr[1]);
-                goLang.checkerboard[yPos - 1 ][xPos - 1] = "❤ ";
-                goLang.printCheckBoard();
-                System.out.println("请输入下x，y的坐标（2号:）");
-                if ((inputstr = br.readLine()) != null) {
-                    posStrArr = inputstr.split(",");
-                    xPos = Integer.parseInt(posStrArr[0]);
-                    yPos = Integer.parseInt(posStrArr[1]);
-                    goLang.checkerboard[yPos - 1 ][xPos - 1] = "★ ";
-                    goLang.printCheckBoard();
+            if (inputValidity(br.readLine())) {
+                if (1 == role && "✖ " == goLang.chessboard[yPos - 1 ][xPos - 1]) {
+                    goLang.chessboard[yPos - 1 ][xPos - 1] = "❤ ";
+                    symbol = "❤ ";
+                    if (goLang.checkWin(symbol)) {
+                        System.out.println(role + "win");
+                        role = 3;
+                        return true;
+                    }
+                    role = 2;
+                } else if ("✖ " == goLang.chessboard[yPos - 1 ][xPos - 1]) {
+                    goLang.chessboard[yPos - 1 ][xPos - 1] = "★ ";
+                    symbol = "★ ";
+                    if (goLang.checkWin(symbol)) {
+                        System.out.println(role + "win");
+                        role = 3;
+                        return true;
+                    }
+                    role = 1;
                 } else {
-                    break;
+                    System.out.println("There are already pieces here,please retry");
                 }
-                System.out.println("请输入下x，y的坐标（1号）:");
+                goLang.printCheckBoard();
+                notifyAll();
+                wait();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
+        } catch (InterruptedException e) {
+            System.out.println(e);
         }
-
+        return false;
     }
 }
+
 /**
  * Operational tests on Map
  * Implement class: HashMap, Hashtable(Properties), LinkedHashMap,
