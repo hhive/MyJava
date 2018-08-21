@@ -1,20 +1,17 @@
 
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.function.IntBinaryOperator;
-import java.util.function.IntUnaryOperator;
+import java.io.*;
 import javax.swing.*;
 import java.util.*;
 
 /**
  * Main
  */
-public class test1 {
+public class Test1 {
 
     private int test = 0;
 
-    public test1() {
+    public Test1() {
         System.out.println(test);
     }
 
@@ -31,6 +28,15 @@ public class test1 {
      */
     public static void main(String[] arg) {
 
+        new TransientTest().printForTransientWithStatic();
+//        try{
+//            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("flyPig.txt")));
+//            oos.writeObject(new TestForFinal());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+//        new TestForFinal();
 //        new MyArray().myprint();
 //        ParentClass a = new ChildClass(4, 5, 6);
 //        ChildClass b = new ChildClass(1, 2, 3);
@@ -46,6 +52,183 @@ public class test1 {
     }
 }
 
+/**
+ * 使用transient关键字不序列化某个变量
+ * 注意读取的时候，读取数据的顺序一定要和存放数据的顺序保持一致
+ *
+ * @author Alexia
+ */
+class TransientTest {
+
+    /**
+     *
+     */
+    public void printForTransientWithStatic() {
+
+        User user = new User();
+        user.setUsername("Alexia");
+        user.setPasswd("123456");
+        user.setSex("male");
+
+        System.out.println("read before Serializable: ");
+        System.out.println("username: " + user.getUsername());
+        System.err.println("password: " + user.getPasswd());
+        System.out.println("sex:" + user.getSex());
+
+        try {
+            ObjectOutputStream os = new ObjectOutputStream(
+                    new FileOutputStream("D:\\JavaProject\\MyJava\\Miscellaneous\\user.txt"));
+            //Write the object of User into file
+            os.writeObject(user); // 将User对象写进文件
+            os.flush();
+            os.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+
+            // 在反序列化之前改变username的值
+            User.username = "jmwang";
+
+            ObjectInputStream is = new ObjectInputStream(new FileInputStream(
+                    "D:\\JavaProject\\MyJava\\Miscellaneous\\user.txt"));
+            user = (User) is.readObject(); // 从流中读取User的数据
+            is.close();
+
+            System.out.println("\nread after Serializable: ");
+            System.out.println("username: " + user.getUsername());
+            System.err.println("password: " + user.getPasswd());
+            System.err.println("sex: " + user.getSex());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+/**
+ *  test for Serializable
+ */
+class User implements Serializable {
+    private static final long serialVersionUID = 8294180014912103005L;
+
+    public static String username;
+    private transient String passwd;
+    private String sex;
+
+    /**
+     *
+     * @return test
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     *
+     * @param username test
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     *
+     * @return test
+     */
+    public String getPasswd() {
+        return passwd;
+    }
+
+    /**
+     *
+     * @param passwd test
+     */
+    public void setPasswd(String passwd) {
+        this.passwd = passwd;
+    }
+
+    /**
+     *
+     * @return test
+     */
+    public String getSex() {
+        return sex;
+    }
+    /**
+     * @param sex test
+     */
+    public  void setSex(String sex) {
+        this.sex = sex;
+    }
+}
+/**
+ * test for final
+ */
+class TestForFinal {
+    private int test = 0;
+    /**
+     *
+     */
+    TestForFinal() {
+        String a = "hello2";
+        final String b = "hello";
+        String d = "hello";
+        String c = b + 2;
+        System.out.println(c);
+        String e = d + 2;
+        System.out.println(e);
+        //Because of FINAL,in the place where b is used,b will be directly replaced with its value
+        System.out.println(a == c);
+        System.out.println(a == e);
+
+        final String f = getHello();
+        String g = f + 2;
+        System.out.println(a == f);
+
+        //After the reference variable is modified by FINAL,
+        // it can no longer point to other object(change),
+        // but the content of the object it points to is variable
+        final MyClass h = new MyClass();
+        System.out.println(++h.i);
+        //The difference between STATIC and FINAL,STATIC variable can change
+        MyClass myClass1 = new MyClass();
+        MyClass myClass2 = new MyClass();
+        System.out.println(myClass1.k);
+        System.out.println(myClass1.j);
+        System.out.println(myClass2.k);
+        System.out.println(myClass2.j);
+        final StringBuilder builder = new StringBuilder("hello");
+        builder.append("world");
+        System.out.println(builder);
+        //builder = new StringBuilder("good");
+    }
+
+    /**
+     *
+     * @return test
+     */
+    public static String getHello() {
+
+       return "hello";
+    }
+
+
+}
+/**
+ *
+ */
+class MyClass {
+    public static double k = Math.random();
+    public final double j = Math.random();
+    public int i = 0;
+}
 ///**
 // * test for split and char
 // */
