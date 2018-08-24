@@ -3,6 +3,8 @@
 import java.io.*;
 import javax.swing.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Main
@@ -28,10 +30,16 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-        System.out.println(new String("xyz") == "xyz");
-        System.out.println(new String("xyz") == new String("xyz"));
-        System.out.println(new String("xyz") + "xyz");
-        System.out.println(new String("xyz") + new String("xyz"));
+        RegularExpression a = new RegularExpression();
+        a.first();
+        a.findGroup();
+        a.startEnd();
+        a.matchesTest();
+//        new AWithCallback().askQusetion();
+//        System.out.println(new String("xyz") == "xyz");
+//        System.out.println(new String("xyz") == new String("xyz"));
+//        System.out.println(new String("xyz") + "xyz");
+//        System.out.println(new String("xyz") + new String("xyz"));
 
 //        new TransientTest().printForTransientWithStatic();
 
@@ -44,22 +52,155 @@ public class Test1 {
 
 //        new TestForFinal();
 //        new MyArray().myprint();
-//        ParentClass a = new ChildClass(4, 5, 6);
-//        ChildClass b = new ChildClass(1, 2, 3);
-//        ((ChildClass) a).childFunction(); //true
-//        a.childFunction(); //error
-//        b.parentFunction(); //true
-//         Object[] a= {1,2,3,5,4,8,6,7};
-//        perm b = new perm(a,1,8);
-//        System.out.println( a[0]);
-//        Statictest a = new Statictest(String.valueOf("1946"));
-//        System.out.println(a.isBornBoomer());
+//        ParentClass AWithCallback = new ChildClass(4, 5, 6);
+//        ChildClass BWithCallback = new ChildClass(1, 2, 3);
+//        ((ChildClass) AWithCallback).childFunction(); //true
+//        AWithCallback.childFunction(); //error
+//        BWithCallback.parentFunction(); //true
+//         Object[] AWithCallback= {1,2,3,5,4,8,6,7};
+//        perm BWithCallback = new perm(AWithCallback,1,8);
+//        System.out.println( AWithCallback[0]);
+        StaticTest staticTest = new StaticTest(String.valueOf("1946"));
+//        System.out.println(AWithCallback.isBornBoomer());
         //System.out.println(String.valueOf("1946"));
+    }
+}
+/**
+ * The test of Regular Expression(regex)
+ */
+class RegularExpression {
+    /**
+     *
+     */
+    public void first() {
+        Pattern p = Pattern.compile("a*b");//ab false
+        Matcher m = p.matcher("aaaab");
+        boolean b = m.matches();
+        System.out.println(b);//true
+        //boolean b = Pattern.matches("a*b", "aaaab");//true
+    }
+    /**
+     *find() and group()
+     */
+    public void findGroup() {
+        String str = "I want to make friends,my tel: 18579115562;"
+                + "My club needs a partner,please contact me: 13054083365;"
+                + "I want to sell some old books,contact me if you want,18579896532.";
+        System.out.println(str);
+        Matcher m = Pattern.compile("((13\\d) | (18\\d))\\d{8}").matcher(str);
+        while (m.find()) {
+            System.out.println(m.group());
+        }
+
+    }
+    /**
+     * start and end and replace
+     */
+    public void startEnd() {
+        String regStr = "Java is very very very easy!";
+        System.out.println("The aim of string: " + regStr);
+        Matcher m = Pattern.compile("\\w+").matcher(regStr);
+        while (m.find()) {
+            System.out.println(m.group() + ", child string start position: "
+                    + m.start() + ",the position of end: " + m.end());
+        }
+        Matcher m1 = Pattern.compile("ve\\w*").matcher(regStr);
+
+        System.out.println(m1.replaceAll("hello"));
+//        m1.replaceFirst("hello");
+//        System.out.println(regStr);
+
+
+    }
+    /**
+     * looking() and reset()
+     */
+    public void matchesTest() {
+        String[] mails = {
+                "kongyeku@163.com",
+                "kongyeku@gmail.org",
+                "wawa@abc.xx",
+                "ligang@foxmail.com"
+        };
+        String mailRegex = "\\w{3,20}@\\w+.(com|org|cn|net|gov)";
+        Pattern mailPattern = Pattern.compile(mailRegex);
+        Matcher mailMatcher = null;
+        for (String mail : mails) {
+            if (null == mailMatcher) {
+                mailMatcher = mailPattern.matcher(mail);
+            } else {
+                mailMatcher.reset(mail);
+            }
+            String result = mail + (mailMatcher.matches() ? " is " : " not ") + "a valid address of mail";
+            System.out.println(result);
+        }
+        //"kongyeku@163.com".matches("\\w{3,20}@\\w+.(com|org|cn|net|gov)");
+    }
+}
+/**
+ * Use AWithCallback interface to subscribe to business logic ,
+ * if it is not to exist ,it is ok
+ */
+interface Callback {
+    /**
+     * Response callback function
+     */
+    public void slove();
+}
+/**
+ * Implement the above interface,
+ * registration implementation class of callback and response callback
+ */
+class AWithCallback implements Callback {
+    BWithCallback BWithCallback = new BWithCallback();
+
+    /**
+     * response callback function
+     */
+    public void slove() {
+        System.out.println("AWithCallback received the message that BWithCallback has solve the problem");
+    }
+    /**
+     * Registration callback function
+     */
+    public void askQusetion() {
+        /**
+         * Do other things yourself
+         */
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                System.out.println("AWithCallback want to do another thing!");
+//            }
+//        }).start();
+        new Thread(() -> System.out.println("AWithCallback want to do another thing!")).start();
+        /**
+         * ask BWithCallback to solve this problem
+         */
+        this.BWithCallback.call(this);
+    }
+}
+/**
+ * Implement callback function
+ */
+class BWithCallback {
+    /**
+     *
+     */
+    public void call (Callback AWithCallback) {
+        /**
+         * BWithCallback help AWithCallback to slove the problem
+         */
+        System.out.println("BWithCallback help AWithCallback to solve the problem!");
+        /**
+         * call back
+         */
+        AWithCallback.slove();
     }
 }
 
 /**
- * Use transient to not serialize a variable,
+ * Use transient to not serialize AWithCallback variable,
  * Note that when reading,the order of reading data must be
  * consistent with the order in which the data is stored
  * @author Alexia
@@ -217,20 +358,20 @@ class TestForFinal {
      *
      */
     TestForFinal() {
-        String a = "hello2";
-        final String b = "hello";
+        String AWithCallback = "hello2";
+        final String BWithCallback = "hello";
         String d = "hello";
-        String c = b + 2;
+        String c = BWithCallback + 2;
         System.out.println(c);
         String e = d + 2;
         System.out.println(e);
-        //Because of FINAL,in the place where b is used,b will be directly replaced with its value
-        System.out.println(a == c);
-        System.out.println(a == e);
+        //Because of FINAL,in the place where BWithCallback is used,BWithCallback will be directly replaced with its value
+        System.out.println(AWithCallback == c);
+        System.out.println(AWithCallback == e);
 
         final String f = getHello();
         String g = f + 2;
-        System.out.println(a == f);
+        System.out.println(AWithCallback == f);
 
         //After the reference variable is modified by FINAL,
         // it can no longer point to other object(change),
@@ -344,7 +485,7 @@ class  ChildClass extends ParentClass {
  * //排列问题
  */
 class Perm {
-    private int a;
+    private int AWithCallback;
 
     /**
      *
@@ -411,6 +552,9 @@ class StaticTest {
     boolean isBornBoomer() {
         return birthString.compareTo(startString) >= 0 && birthString.compareTo(endString) < 0;
     }
+    public static void staticWay() {
+        System.out.println("This is a STATIC way");
+    }
 }
 
 
@@ -422,9 +566,9 @@ class StaticTest {
 //    static final Random rand = new Random();
 //
 //    /**
-//     * There we provide a default implementation to simulate robot's behavior
+//     * There we provide AWithCallback default implementation to simulate robot's behavior
 //     *
-//     * @return a {@code robot.Pair} which contains a valid (x,y) position
+//     * @return AWithCallback {@code robot.Pair} which contains AWithCallback valid (x,y) position
 //     */
 //    default ChessWithRobot.Pair getDeterminedPos() {
 //        return new ChessWithRobot.Pair(rand.nextInt(15) + 1, rand.nextInt(15) + 1);
@@ -466,9 +610,9 @@ class StaticTest {
 //
 //
 //    /**
-//     * There we provide a default implementation to simulate robot's behavior
+//     * There we provide AWithCallback default implementation to simulate robot's behavior
 //     *
-//     * @return a {@code robot.Pair} which contains a valid (x,y) position
+//     * @return AWithCallback {@code robot.Pair} which contains AWithCallback valid (x,y) position
 //     */
 //    @Override
 //    public Pair getDeterminedPos() {
@@ -651,10 +795,10 @@ class StaticTest {
 //    }
 //
 //    private int evaluateScore(int role,int x, int y){
-//        int a = patternRecognition(role,x,y,ORIENTATION_RT_LD);
-//        int b = patternRecognition(role,x,y,ORIENTATION_LT_RD);
+//        int AWithCallback = patternRecognition(role,x,y,ORIENTATION_RT_LD);
+//        int BWithCallback = patternRecognition(role,x,y,ORIENTATION_LT_RD);
 //        int c = patternRecognition(role,x,y,ORIENTATION_UD);
 //        int d = patternRecognition(role,x,y,ORIENTATION_LR);
-//        return Math.max(Math.max(Math.max(a,b),c),d);
+//        return Math.max(Math.max(Math.max(AWithCallback,BWithCallback),c),d);
 //    }
 //}

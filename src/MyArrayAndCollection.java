@@ -406,7 +406,6 @@ class MyList {
     }
 }
 
-
 /**
  * Set is basically the same as Collection,
  * but Set dose not allow duplicate elements;
