@@ -28,7 +28,13 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-        new TransientTest().printForTransientWithStatic();
+        System.out.println(new String("xyz") == "xyz");
+        System.out.println(new String("xyz") == new String("xyz"));
+        System.out.println(new String("xyz") + "xyz");
+        System.out.println(new String("xyz") + new String("xyz"));
+
+//        new TransientTest().printForTransientWithStatic();
+
 //        try{
 //            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("flyPig.txt")));
 //            oos.writeObject(new TestForFinal());
@@ -53,9 +59,9 @@ public class Test1 {
 }
 
 /**
- * 使用transient关键字不序列化某个变量
- * 注意读取的时候，读取数据的顺序一定要和存放数据的顺序保持一致
- *
+ * Use transient to not serialize a variable,
+ * Note that when reading,the order of reading data must be
+ * consistent with the order in which the data is stored
  * @author Alexia
  */
 class TransientTest {
@@ -66,20 +72,24 @@ class TransientTest {
     public void printForTransientWithStatic() {
 
         User user = new User();
+        user.setId("01");
         user.setUsername("Alexia");
         user.setPasswd("123456");
         user.setSex("male");
+        user.setIdentity("student");
 
         System.out.println("read before Serializable: ");
+        System.out.println("id:" + user.getId());
         System.out.println("username: " + user.getUsername());
         System.err.println("password: " + user.getPasswd());
         System.out.println("sex:" + user.getSex());
+        System.out.println("identity:" + user.getIdentity());
 
         try {
             ObjectOutputStream os = new ObjectOutputStream(
                     new FileOutputStream("D:\\JavaProject\\MyJava\\Miscellaneous\\user.txt"));
-            //Write the object of User into file
-            os.writeObject(user); // 将User对象写进文件
+            //Write the object of User to file
+            os.writeObject(user);
             os.flush();
             os.close();
         } catch (FileNotFoundException e) {
@@ -89,18 +99,21 @@ class TransientTest {
         }
         try {
 
-            // 在反序列化之前改变username的值
-            User.username = "jmwang";
+            //Change the value of username before Deserialize
+            User.username = "wang";
 
             ObjectInputStream is = new ObjectInputStream(new FileInputStream(
                     "D:\\JavaProject\\MyJava\\Miscellaneous\\user.txt"));
-            user = (User) is.readObject(); // 从流中读取User的数据
+            //Read the data of User from Stream
+            user = (User) is.readObject();
             is.close();
 
             System.out.println("\nread after Serializable: ");
+            System.out.println("id:" + user.getId());
             System.out.println("username: " + user.getUsername());
             System.err.println("password: " + user.getPasswd());
             System.err.println("sex: " + user.getSex());
+            System.out.println("identity:" + user.getIdentity());
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -118,10 +131,24 @@ class TransientTest {
 class User implements Serializable {
     private static final long serialVersionUID = 8294180014912103005L;
 
+    private String id;
     public static String username;
-    private transient String passwd;
+    private transient String password;
     private String sex;
+    private String identity;
 
+    /**
+     *@return test
+     */
+    public String getId() {
+        return id;
+    }
+    /**
+     * @param id test
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
     /**
      *
      * @return test
@@ -143,15 +170,15 @@ class User implements Serializable {
      * @return test
      */
     public String getPasswd() {
-        return passwd;
+        return password;
     }
 
     /**
      *
-     * @param passwd test
+     * @param password test
      */
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
+    public void setPasswd(String password) {
+        this.password = password;
     }
 
     /**
@@ -167,6 +194,19 @@ class User implements Serializable {
     public  void setSex(String sex) {
         this.sex = sex;
     }
+    /**
+     * @return test
+     */
+    public String getIdentity() {
+        return identity;
+    }
+    /**
+     * @param identity test
+     */
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
 }
 /**
  * test for final
@@ -195,11 +235,11 @@ class TestForFinal {
         //After the reference variable is modified by FINAL,
         // it can no longer point to other object(change),
         // but the content of the object it points to is variable
-        final MyClass h = new MyClass();
+        final MyClassForFinal h = new MyClassForFinal();
         System.out.println(++h.i);
         //The difference between STATIC and FINAL,STATIC variable can change
-        MyClass myClass1 = new MyClass();
-        MyClass myClass2 = new MyClass();
+        MyClassForFinal myClass1 = new MyClassForFinal();
+        MyClassForFinal myClass2 = new MyClassForFinal();
         System.out.println(myClass1.k);
         System.out.println(myClass1.j);
         System.out.println(myClass2.k);
@@ -224,10 +264,10 @@ class TestForFinal {
 /**
  *
  */
-class MyClass {
+class MyClassForFinal {
     public static double k = Math.random();
-    public final double j = Math.random();
-    public int i = 0;
+    final double j = Math.random();
+    int i = 0;
 }
 ///**
 // * test for split and char
