@@ -7,7 +7,7 @@ public class SearchAndSort {
      */
     public static void main(String[] arg) {
 
-        int[] number = {38, 49, 65, 97, 76, 13, 27, 49,};
+        int[] number = {38, 49, 65, 97, 76, 13, 27, 49};
         //new QuickSort(number);
         new InsertSort().halfInsertSort(number);
         for (int x : number) {
