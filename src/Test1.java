@@ -33,8 +33,8 @@ public class Test1 {
         RegularExpression a = new RegularExpression();
         a.first();
         a.findGroup();
-        a.startEnd();
-        a.matchesTest();
+//        a.startEnd();
+//        a.matchesTest();
 //        new AWithCallback().askQusetion();
 //        System.out.println(new String("xyz") == "xyz");
 //        System.out.println(new String("xyz") == new String("xyz"));
@@ -61,7 +61,7 @@ public class Test1 {
 //        perm BWithCallback = new perm(AWithCallback,1,8);
 //        System.out.println( AWithCallback[0]);
         StaticTest staticTest = new StaticTest(String.valueOf("1946"));
-//        System.out.println(AWithCallback.isBornBoomer());
+//        System.out.println(AWithCallback.isBornBoomer());7
         //System.out.println(String.valueOf("1946"));
     }
 }
@@ -73,21 +73,22 @@ class RegularExpression {
      *
      */
     public void first() {
-        Pattern p = Pattern.compile("a*b");//ab false
+        Pattern p = Pattern.compile("a*b"); //ab false
         Matcher m = p.matcher("aaaab");
         boolean b = m.matches();
-        System.out.println(b);//true
+        System.out.println(b); //true
         //boolean b = Pattern.matches("a*b", "aaaab");//true
     }
     /**
      *find() and group()
      */
     public void findGroup() {
-        String str = "I want to make friends,my tel: 18579115562;"
-                + "My club needs a partner,please contact me: 13054083365;"
+        String str = "I want to make friends,my tel:18579115585;"
+                + "My club needs a partner,please contact me:13054083365;"
                 + "I want to sell some old books,contact me if you want,18579896532.";
         System.out.println(str);
-        Matcher m = Pattern.compile("((13\\d) | (18\\d))\\d{8}").matcher(str);
+        Matcher m = Pattern.compile("((13\\d+)|(18\\d+))\\d{8}").matcher(str);
+        System.out.println(m);
         while (m.find()) {
             System.out.println(m.group());
         }
@@ -145,14 +146,14 @@ interface Callback {
     /**
      * Response callback function
      */
-    public void slove();
+     void slove();
 }
 /**
  * Implement the above interface,
  * registration implementation class of callback and response callback
  */
 class AWithCallback implements Callback {
-    BWithCallback BWithCallback = new BWithCallback();
+    private BWithCallback bWithCallback = new BWithCallback();
 
     /**
      * response callback function
@@ -177,7 +178,7 @@ class AWithCallback implements Callback {
         /**
          * ask BWithCallback to solve this problem
          */
-        this.BWithCallback.call(this);
+        this.bWithCallback.call(this);
     }
 }
 /**
@@ -185,9 +186,9 @@ class AWithCallback implements Callback {
  */
 class BWithCallback {
     /**
-     *
+     * @param aWithCallback test
      */
-    public void call (Callback AWithCallback) {
+    public void call(Callback aWithCallback) {
         /**
          * BWithCallback help AWithCallback to slove the problem
          */
@@ -195,7 +196,7 @@ class BWithCallback {
         /**
          * call back
          */
-        AWithCallback.slove();
+        aWithCallback.slove();
     }
 }
 
@@ -485,7 +486,7 @@ class  ChildClass extends ParentClass {
  * //排列问题
  */
 class Perm {
-    private int AWithCallback;
+    private int aWithCallback;
 
     /**
      *
@@ -552,6 +553,10 @@ class StaticTest {
     boolean isBornBoomer() {
         return birthString.compareTo(startString) >= 0 && birthString.compareTo(endString) < 0;
     }
+
+    /**
+     *
+     */
     public static void staticWay() {
         System.out.println("This is a STATIC way");
     }

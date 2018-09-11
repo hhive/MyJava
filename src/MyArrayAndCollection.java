@@ -289,7 +289,7 @@ class GoLang {
  * SortedMap, TreeMap, weakHashMap, IdentityHashMap, EnumMap
  */
 class MyMap {
-    private Map map = new HashMap();
+    private Map<String, Integer> map = new HashMap<>();
     /**
      * print
      */
