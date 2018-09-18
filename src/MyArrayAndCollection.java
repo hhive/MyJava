@@ -1,8 +1,9 @@
 
-
+import org.apache.commons.lang3.ArrayUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntUnaryOperator;
 import javax.swing.*;
@@ -10,7 +11,9 @@ import java.util.*;
 
 /**
  * Main
+ *
  */
+
 public final class MyArrayAndCollection {
     /**
      * Constructor
@@ -24,10 +27,24 @@ public final class MyArrayAndCollection {
      */
     public static void main(String[] arg) {
 
-        GoLang goLang = new GoLang();
-        goLang.printCheckBoard();
-        new ThreadForChess1(goLang).start();
-        new ThreadForChess1(goLang).start();
+
+        ShowHand showHand = new ShowHand();
+        showHand.play(showHand);
+//        Book book = new Book();
+//        ArrayList<Book> arrayList = new ArrayList<>();
+//        book.setTitle("a");
+//        book.setPrice(1);
+//        arrayList.add(book);
+//        book.setTitle("b");
+//        book.setPrice(2);
+//        arrayList.add(book);
+//        for (Book book1 : arrayList) {
+//            System.out.println(book.getTitle() + "," + book.getPrice());
+//        }
+//        GoLang goLang = new GoLang();
+//        goLang.printCheckBoard();
+//        new ThreadForChess1(goLang).start();
+//        new ThreadForChess1(goLang).start();
 
 //        MyMap myMap = new MyMap();
 //        myMap.printForHashMap();
@@ -58,6 +75,226 @@ public final class MyArrayAndCollection {
     }
 }
 
+/**
+ * test2 for showHand
+ */
+class ShowHand {
+    private final int MAX_PLAY_NUM = 5;
+    private  int PLAY_NUM = 5;
+    private String[] types = {"方块", "草花", "红心", "黑桃"};
+    private String[] values = {"2", "3", "4", "5", "6",
+            "7", "8", "9", "10", "J", "Q", "K", "A"};
+    private List<String> cards = new LinkedList<String>();
+    private String[] players = new String[MAX_PLAY_NUM];
+    //the element of Array is List
+    private List<String>[] playersCards = new List[MAX_PLAY_NUM];
+    private LinkedList<String> temp = new LinkedList<String>();
+    //Two-dimensional List
+    private List<LinkedList<String>> originalCards = new LinkedList<>();
+    /**
+     *
+     */
+    public void initCards() {
+        for (int i = 0; i < types.length; i++) {
+            for (int j = 0; j < values.length; j++) {
+                cards.add(types[i] + values[j]);
+            }
+        }
+        for (int i = 0; i < types.length; i++) {
+            for (int j = 0; j < values.length; j++) {
+                temp.add(types[i] + values[j]);
+            }
+            originalCards.add(temp);
+            temp = new LinkedList<String>();
+        }
+        Collections.shuffle(cards);
+
+//        for (int i = 0; i < types.length; i++) {
+//            for (int j = 0; j < values.length; j++) {
+//                //if (originalCards.get(i).get(j).equals("黑桃3")) {
+//                    System.out.print(originalCards.get(i).get(j) + " ");
+//                //}
+//            }
+//        }
+//        System.out.println(originalCards.get(3));
+//        System.out.println(originalCards.get(3).get(2));
+//        System.out.println(originalCards.contains("黑桃3"));
+//        System.out.println(cards.indexOf("黑桃3"));
+//        Iterator iterator = originalCards.iterator();
+//        Iterator iterator2 = cards.iterator();
+//        while (iterator.hasNext()) {
+//            System.out.print(iterator.next() + " ");
+//        }
+//        System.out.println();
+//        while (iterator2.hasNext()) {
+//            System.out.print(iterator2.next() + " ");
+//        }
+    }
+    /**
+     * @param names
+     */
+    public void initPlayer(String... names) {
+        if (names.length > MAX_PLAY_NUM || names.length < 2) {
+            System.out.println("The number of player is error");
+            return;
+        } else {
+            for (int i = 0; i < names.length; i++) {
+                players[i] = names[i];
+            }
+        }
+        PLAY_NUM = names.length;
+    }
+    /**
+     *
+     */
+    public void initPlayerCards() {
+        for (int i = 0; i < PLAY_NUM; i++) {
+            if (players[i] != null && !players[i].equals("")) {
+                playersCards[i] = new LinkedList<String>();
+            }
+        }
+    }
+    /**
+     *
+     */
+    public void deliverCard(String first) {
+        int counter = 0;
+        counter++;
+        //get index by the content of element
+        int firstPos = Arrays.binarySearch(players, first);
+        for (int i = firstPos; i < PLAY_NUM; i++) {
+            if (players[i] != null) {
+                playersCards[i].add(cards.get(0));
+                cards.remove(0);
+            }
+        }
+        for (int i = 0; i < firstPos; i++) {
+            if (players[i] != null) {
+                playersCards[i].add(cards.get(0));
+                cards.remove(0);
+            }
+        }
+        if (5 == counter) {
+            cards.clear();
+        }
+//        for (int i = 0; i < 3; i++) {
+//            System.out.println(playersCards[i].get(0));
+//        }
+    }
+    /**
+     *show the handCards except the first
+     */
+    public void showPlaysCards() {
+        for (int i = 0; i < PLAY_NUM; i++) {
+            if (players[i] != null) {
+                System.out.print(players[i] + "： ");
+                for (int j = 1; j < playersCards[i].size(); j++) {
+                    System.out.print(playersCards[i].get(j) + " "); //peekLast()?
+                }
+            }
+            System.out.println();
+        }
+    }
+    /**
+     *compare to the size of the last card ,return the biggest one
+     */
+    public String specificSize() {
+        int max = 0;
+        int k = 0;
+        int z = 1;
+        boolean flag = false;
+        int[] onrTurnI = new int[PLAY_NUM];
+        int[] onrTurnJ = new int[PLAY_NUM];
+        for (int y = 0; y < PLAY_NUM; y++) {
+            for (int i = 0; i < types.length; i++) {
+                for (int j = 0; j < values.length; j++) {
+                    if (originalCards.get(i).get(j).equals(playersCards[y].get(playersCards[y].size() - 1))) {
+                        onrTurnI[k] = i;
+                        onrTurnJ[k] = j;
+                        k++;
+
+                    }
+                }
+
+            }
+        }
+        while (z < PLAY_NUM) {
+            if (onrTurnJ[z] > onrTurnJ[max]) {
+                max = z;
+                z++;
+            } else if (onrTurnJ[z] == onrTurnJ[max]) {
+                if (onrTurnI[z] > onrTurnI[max]) {
+                    max = z;
+                    z++;
+                }
+            } else {
+                z++;
+            }
+        }
+        return players[max];
+    }
+    /**
+     *
+     */
+    public void isBet(String first) {
+        int firstPos = Arrays.binarySearch(players, first);
+        for (int i = firstPos; i < PLAY_NUM; i++) {
+            toBet(i);
+        }
+        for (int i = 0; i < firstPos; i++) {
+            toBet(i);
+        }
+    }
+    /**
+     *
+     */
+    private void toBet(int i) {
+        Scanner in = new Scanner(System.in);
+        if (players[i] != null) {
+            System.out.println(players[i] + "是否下注？请输入\"是\"或者\"否\"");
+            if (!in.nextLine().equals("是")) {
+                for (int j = i; j < PLAY_NUM - 1; j++) {
+                    players[j] = players[j + 1];
+                }
+                PLAY_NUM--;
+            }
+        }
+    }
+    /**
+     * @param showHand
+     */
+    public void play(ShowHand showHand) {
+        showHand.initPlayer("玩家1", "玩家2", "玩家3");
+        showHand.initCards();
+        showHand.initPlayerCards();
+        showHand.deliverCard("玩家1");
+        //showHand.showPlaysCards();
+        showHand.deliverCard("玩家1");
+        showHand.showPlaysCards();
+        while (PLAY_NUM > 1 && cards.size() > 0) {
+            String first = showHand.specificSize();
+            System.out.println("这轮" + first + "最大");
+            isBet(first);
+            showHand.deliverCard(first);
+            showHand.showPlaysCards();
+        }
+        if (1 == PLAY_NUM) {
+            System.out.println(players[0] + "win");
+        }
+        if (0 == cards.size()) {
+            System.out.println("这轮五张牌已发完毕，显示玩家的所有牌，请比较大小");
+            for (int i = 0; i < PLAY_NUM; i++) {
+                if (players[i] != null) {
+                    System.out.print(players[i] + "： ");
+                    for (int j = 0; j < playersCards[i].size(); j++) {
+                        System.out.print(playersCards[i].get(j) + " "); //peekLast()?
+                    }
+                }
+                System.out.println();
+            }
+        }
+    }
+}
 /**
  *
  */
@@ -766,7 +1003,7 @@ class MyArray {
     /**
      *
      */
-    public void myPrint() {
+    public void myPrintForArray() {
         String[] strings1 = {"Hello"};
         System.out.println(d[1][3]);
         int[] arr1 = {3, -4, 25, 16, 30, 18};
@@ -791,7 +1028,16 @@ class MyArray {
             }
         });
         System.out.println(Arrays.toString(arr3));
+    //insert element
+    ArrayList<String> list = new ArrayList<String>(); // 增加元素到list对象中
+    list.add("Item1");
+    list.add("Item2");
+    list.add(2, "Item3"); // 此条语句将会把“Item3”字符串增加到list的第3个位置。
+    list.add("Item4");
+    Iterator iterator = list.iterator();
+        while (iterator.hasNext()) {
+        System.out.println(iterator.next());
     }
-
+    }
 }
 

@@ -9,9 +9,47 @@ public class SearchAndSort {
 
         int[] number = {38, 49, 65, 97, 76, 13, 27, 49};
         //new QuickSort(number);
-        new InsertSort().halfInsertSort(number);
+        //new InsertSort().halfInsertSort(number);
+        new ShellSort(number);
         for (int x : number) {
             System.out.print(x + " ");
+        }
+    }
+}
+/**
+ *
+ */
+class ShellSort {
+    /**
+     *
+     */
+    ShellSort(int[] number) {
+        shellSort(number);
+    }
+
+    /**
+     *
+     * @param number
+     */
+    public void shellSort(int[] number) {
+//        int j;
+        int temp = 0;
+        for (int increment = number.length / 2; increment > 0; increment /= 2) {
+            for (int i = increment; i < number.length; i++) {
+                temp = number[i];
+//                for (j = i; j >= increment; j -= increment) {
+//                    if (number[j] < number[j - increment]) {
+//                        number[j] = number[j - increment];
+//                    } else {
+//                        break;
+//                    }
+//                }
+//                number[j] = temp;
+                if (number[i] < number[i - increment]) {
+                    number[i] = number[i - increment];
+                    number[i - increment] = temp;
+                }
+            }
         }
     }
 }
