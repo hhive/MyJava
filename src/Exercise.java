@@ -1,39 +1,119 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Main
+ *
  */
-public class Main {
-
-    private int test = 0;
-
-    public Main() {
-        System.out.println(test);
-    }
-
-    /**
-     * @param s The object of print
-     */
-    public static void myPrint(String s) {
-        System.out.println(s);
-    }
-
+public class Exercise {
     /**
      *
-     * @param arg  parameter for main
+     * @param arg
      */
     public static void main(String[] arg) {
-        new GaiFeng().gaiFeng2();
+        new StringCatcher().print();
     }
+}
+
+/**
+ * 从第一个元素开始，按照元素的大小移动，
+ * 正数后移，负数前移，0不移，看是否能越界，能true
+ */
+class YurJie {
+    /**
+     *
+     */
+    public void test() {
+        System.out.println("请输入数组的大小：");
+        Scanner sc = new Scanner(System.in);
+        int size = sc.nextInt();
+        int[] a = new int[size];
+        for (int i = 0; i < size; i++) {
+            a[i] = sc.nextInt();
+        }
+        try {
+            for (int i = 0; i < size;) {
+                i += a[i];
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("true");
+        }
+    }
+}
+/**
+ * A='youzan',B='zanyou',切割A为两部分并换位置再连接成B
+ */
+class StringCatcher {
+    /**
+     *
+     */
+    public void print() {
+        int count = 0;
+        boolean flag = false;
+        String c = "aa";
+//        StringBuilder b = new StringBuilder("zanyou");
+        String b = "zanyou";
+        StringBuilder a = new StringBuilder("youzan");
+        while (!flag && count < a.length()) {
+            char temp = a.charAt(0);
+            a.deleteCharAt(0);
+            a.append(temp);
+            flag = a.toString().equals(b);
+            count++;
+        }
+        System.out.println(flag);
+        System.out.println(a);
+        System.out.println(count);
+    }
+}
+
+/**
+ *
+ */
+class Kills {
+    int i;
+    List<Integer> kills = new ArrayList<>();
+    List<Integer> store = new ArrayList<>();
+    /**
+     *
+     */
+    public void kills() {
+
+        Scanner sc = new Scanner(System.in);
+        int num = sc.nextInt();
+        for (int i = 0; i < num; i++) {
+            kills.add(sc.nextInt());
+        }
+        System.out.println(kills);
+        int count = 0;
+        for (int i = 0;; i = 0) {
+            while (kills.size() > i + 1) {
+                if (kills.get(i) > kills.get(i + 1)) {
+                    store.add(kills.get(i + 1));
+                    i++;
+                } else {
+                    i++;
+                }
+
+            }
+            i = 0;
+            if (store.size() == 0) {
+                break;
+            }
+            while (store.size() >  i) {
+                //remove(int position) and remove(object object)
+                kills.remove(store.get(i));
+                i++;
+            }
+            store.clear();
+            count++;
+        }
+        System.out.println(count);
+    }
+
 }
 /**
  *
@@ -156,6 +236,7 @@ class GaiFeng {
         return sum / (double) list.size();
     }
 }
+
 /**
  *
  */

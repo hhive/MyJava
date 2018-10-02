@@ -1,5 +1,4 @@
 
-import org.apache.commons.lang3.ArrayUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,9 +26,12 @@ public final class MyArrayAndCollection {
      */
     public static void main(String[] arg) {
 
-
-        ShowHand showHand = new ShowHand();
-        showHand.play(showHand);
+//        int[] a = {1,2};
+//        System.out.println(Arrays.binarySearch(a,1));
+//        String[] b = {"玩家1","玩家2"};
+//        System.out.println(Arrays.binarySearch(b,"玩家1"));
+//        ShowHand showHand = new ShowHand();
+//        showHand.play(showHand);
 //        Book book = new Book();
 //        ArrayList<Book> arrayList = new ArrayList<>();
 //        book.setTitle("a");
@@ -50,8 +52,8 @@ public final class MyArrayAndCollection {
 //        myMap.printForHashMap();
 //        MyQueue myQueue = new MyQueue();
 //        myQueue.printForQueue();
-//        MyList myList = new MyList();
-//        myList.printForList();
+        MyList myList = new MyList();
+        myList.printForList();
 
 //        ParentClass a = new ChildClass(4, 5, 6);
 //        ChildClass b = new ChildClass(1, 2, 3);
@@ -81,6 +83,8 @@ public final class MyArrayAndCollection {
 class ShowHand {
     private final int MAX_PLAY_NUM = 5;
     private  int PLAY_NUM = 5;
+    int counter = 0;
+    int firstPos = 0;
     private String[] types = {"方块", "草花", "红心", "黑桃"};
     private String[] values = {"2", "3", "4", "5", "6",
             "7", "8", "9", "10", "J", "Q", "K", "A"};
@@ -92,7 +96,7 @@ class ShowHand {
     //Two-dimensional List
     private List<LinkedList<String>> originalCards = new LinkedList<>();
     /**
-     *
+     * Initialize the deck.
      */
     public void initCards() {
         for (int i = 0; i < types.length; i++) {
@@ -100,6 +104,7 @@ class ShowHand {
                 cards.add(types[i] + values[j]);
             }
         }
+        Collections.shuffle(cards);
         for (int i = 0; i < types.length; i++) {
             for (int j = 0; j < values.length; j++) {
                 temp.add(types[i] + values[j]);
@@ -107,7 +112,6 @@ class ShowHand {
             originalCards.add(temp);
             temp = new LinkedList<String>();
         }
-        Collections.shuffle(cards);
 
 //        for (int i = 0; i < types.length; i++) {
 //            for (int j = 0; j < values.length; j++) {
@@ -131,7 +135,7 @@ class ShowHand {
 //        }
     }
     /**
-     * @param names
+     * @param names The Array to store the name of players
      */
     public void initPlayer(String... names) {
         if (names.length > MAX_PLAY_NUM || names.length < 2) {
@@ -145,7 +149,7 @@ class ShowHand {
         PLAY_NUM = names.length;
     }
     /**
-     *
+     *Initialize the List that store the cards belong to player
      */
     public void initPlayerCards() {
         for (int i = 0; i < PLAY_NUM; i++) {
@@ -155,13 +159,26 @@ class ShowHand {
         }
     }
     /**
-     *
+     *Simulated licensing
      */
-    public void deliverCard(String first) {
-        int counter = 0;
+    public void deliverCard(String firstPlayer) {
         counter++;
         //get index by the content of element
-        int firstPos = Arrays.binarySearch(players, first);
+//        String[] b = {"玩家1","玩家2"};
+//        System.out.println(Arrays.binarySearch(b,firstPlayer));
+//        for (int i = 0; i < players.length; i++)
+//        System.out.println(players[i]);
+//        System.out.println(Arrays.binarySearch(players, firstPlayer));
+        int first = Arrays.binarySearch(players, firstPlayer);
+        System.out.println(first);
+        if (first < 0) {
+            firstPos = firstPos + 1;
+            if (firstPos >= PLAY_NUM) {
+                firstPos = 0;
+            }
+        } else {
+            firstPos = first;
+        }
         for (int i = firstPos; i < PLAY_NUM; i++) {
             if (players[i] != null) {
                 playersCards[i].add(cards.get(0));
@@ -182,7 +199,7 @@ class ShowHand {
 //        }
     }
     /**
-     *show the handCards except the first
+     *Show the handCards except the first
      */
     public void showPlaysCards() {
         for (int i = 0; i < PLAY_NUM; i++) {
@@ -226,6 +243,8 @@ class ShowHand {
                 if (onrTurnI[z] > onrTurnI[max]) {
                     max = z;
                     z++;
+                } else {
+                    z++;
                 }
             } else {
                 z++;
@@ -236,35 +255,47 @@ class ShowHand {
     /**
      *
      */
-    public void isBet(String first) {
-        int firstPos = Arrays.binarySearch(players, first);
+    public void isBet(String firstPlayer) {
+        firstPos = Arrays.binarySearch(players, firstPlayer);
         for (int i = firstPos; i < PLAY_NUM; i++) {
-            toBet(i);
+            i = toBet(i);
         }
         for (int i = 0; i < firstPos; i++) {
             toBet(i);
         }
     }
     /**
-     *
+     *Decide whether to place a bet
      */
-    private void toBet(int i) {
+    private int toBet(int i) {
         Scanner in = new Scanner(System.in);
         if (players[i] != null) {
-            System.out.println(players[i] + "是否下注？请输入\"是\"或者\"否\"");
-            if (!in.nextLine().equals("是")) {
+            System.out.println(players[i] + "是否下注？请输入\"y\"或者\"n\"");
+            String sc = in.nextLine();
+            System.out.println(i + "," + sc + "," + PLAY_NUM);
+            while (!sc.equals("y") && !sc.equals("n")) {
+                System.out.println(!sc.equals("y") + "," + !sc.equals("n"));
+                System.out.println("输入错误，" + players[i] + "请输入\"y\"或者\"n\"");
+                sc = in.nextLine();
+                System.out.println(sc);
+            }
+            if (sc.equals("n")) {
                 for (int j = i; j < PLAY_NUM - 1; j++) {
                     players[j] = players[j + 1];
                 }
+                i--;
                 PLAY_NUM--;
             }
         }
+        return i;
     }
     /**
-     * @param showHand
+     * The process of simulating a game
+     * @param showHand The object
      */
     public void play(ShowHand showHand) {
-        showHand.initPlayer("玩家1", "玩家2", "玩家3");
+        showHand.initPlayer("玩家1", "玩家2"); //NullPointerException
+        //showHand.initPlayer("玩家1", "玩家2", "玩家3");
         showHand.initCards();
         showHand.initPlayerCards();
         showHand.deliverCard("玩家1");
@@ -272,14 +303,14 @@ class ShowHand {
         showHand.deliverCard("玩家1");
         showHand.showPlaysCards();
         while (PLAY_NUM > 1 && cards.size() > 0) {
-            String first = showHand.specificSize();
-            System.out.println("这轮" + first + "最大");
-            isBet(first);
-            showHand.deliverCard(first);
+            String firstPlayer = showHand.specificSize();
+            System.out.println("这轮" + firstPlayer + "最大");
+            isBet(firstPlayer);
+            showHand.deliverCard(firstPlayer);
             showHand.showPlaysCards();
         }
         if (1 == PLAY_NUM) {
-            System.out.println(players[0] + "win");
+            System.out.println("只剩一位玩家，" +  players[0] + "win");
         }
         if (0 == cards.size()) {
             System.out.println("这轮五张牌已发完毕，显示玩家的所有牌，请比较大小");

@@ -30,9 +30,10 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-        RegularExpression a = new RegularExpression();
-        a.first();
-        a.findGroup();
+        new TestForVariable().test();
+//        RegularExpression a = new RegularExpression();
+//        a.first();
+//        a.findGroup();
 //        a.startEnd();
 //        a.matchesTest();
 //        new AWithCallback().askQusetion();
@@ -55,7 +56,7 @@ public class Test1 {
 //        ParentClass AWithCallback = new ChildClass(4, 5, 6);
 //        ChildClass BWithCallback = new ChildClass(1, 2, 3);
 //        ((ChildClass) AWithCallback).childFunction(); //true
-//        AWithCallback.childFunction(); //error
+//        AWithCallback.childFunction(); //false
 //        BWithCallback.parentFunction(); //true
 //         Object[] AWithCallback= {1,2,3,5,4,8,6,7};
 //        perm BWithCallback = new perm(AWithCallback,1,8);
@@ -64,6 +65,46 @@ public class Test1 {
 //        System.out.println(AWithCallback.isBornBoomer());7
         //System.out.println(String.valueOf("1946"));
     }
+}
+
+/**
+ *
+ */
+class TestForVariable {
+    int a;
+    byte b;
+    short c;
+    long d;
+    boolean e;
+    String f;
+    float g;
+    double h;
+    /**
+     *
+     */
+    public void test() {
+        int k;
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
+        System.out.println(d);
+        System.out.println(e);
+        System.out.println(f);
+        System.out.println(g);
+        System.out.println(h);
+        /**
+         * k must be initialized being used
+         */
+//        if (k < 1) {
+//            System.out.println(k);
+//        }
+    }
+}
+/**
+ *
+ */
+interface InterfaceTest {
+    public void test1();
 }
 /**
  * The test of Regular Expression(regex)
@@ -279,6 +320,16 @@ class User implements Serializable {
     private String sex;
     private String identity;
 
+    public boolean isTrue() {
+        return isTrue;
+    }
+
+    public void setTrue(boolean aTrue) {
+        isTrue = aTrue;
+    }
+
+    private boolean isTrue;
+
     /**
      *@return test
      */
@@ -359,20 +410,20 @@ class TestForFinal {
      *
      */
     TestForFinal() {
-        String AWithCallback = "hello2";
-        final String BWithCallback = "hello";
+        String aWithCallback = "hello2";
+        final String bWithCallback = "hello";
         String d = "hello";
-        String c = BWithCallback + 2;
+        String c = bWithCallback + 2;
         System.out.println(c);
         String e = d + 2;
         System.out.println(e);
         //Because of FINAL,in the place where BWithCallback is used,BWithCallback will be directly replaced with its value
-        System.out.println(AWithCallback == c);
-        System.out.println(AWithCallback == e);
+        System.out.println(aWithCallback == c);
+        System.out.println(aWithCallback == e);
 
         final String f = getHello();
         String g = f + 2;
-        System.out.println(AWithCallback == f);
+        System.out.println(aWithCallback == f);
 
         //After the reference variable is modified by FINAL,
         // it can no longer point to other object(change),
