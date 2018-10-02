@@ -22,7 +22,7 @@ public class Exercise {
  * 从第一个元素开始，按照元素的大小移动，
  * 正数后移，负数前移，0不移，看是否能越界，能true
  */
-class YurJie {
+class YueJie {
     /**
      *
      */

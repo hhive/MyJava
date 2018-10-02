@@ -104,7 +104,7 @@ class TestForVariable {
  *
  */
 interface InterfaceTest {
-    public void test1();
+    public void test2();
 }
 /**
  * The test of Regular Expression(regex)
