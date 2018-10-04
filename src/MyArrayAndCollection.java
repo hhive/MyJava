@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,8 +8,87 @@ import javax.swing.*;
 import java.util.*;
 
 /**
+ * interface for LambdaQa test
+ */
+interface MyInterface {
+    /**
+     * test
+     */
+    interface Eatable {
+        /**
+         * test
+         */
+        void taste();
+    }
+
+    /**
+     * test
+     */
+    interface Flyable {
+        /**
+         * @param weather test
+         */
+        void fly(String weather);
+    }
+
+    /**
+     * test
+     */
+    interface Addable {
+        /**
+         * @param a test
+         * @param b test
+         * @return test
+         */
+        int add(int a, int b);
+    }
+
+    /**
+     * test
+     */
+    @FunctionalInterface
+    interface Converter {
+        /**
+         * @param from test
+         * @return test
+         */
+        Integer convert(String from);
+    }
+
+    /**
+     * test
+     */
+    @FunctionalInterface
+    interface MyTest {
+        /**
+         * @param a test
+         * @param b test
+         * @param c test
+         * @return test
+         */
+        String test(String a, int b, int c);
+    }
+
+    /**
+     *
+     */
+    @FunctionalInterface
+    interface YourTest {
+        /**
+         * @param title test
+         * @return test
+         */
+        JFrame win(String title);
+    }
+
+    /**
+     *
+     * @param e test
+     */
+}
+
+/**
  * Main
- *
  */
 
 public final class MyArrayAndCollection {
@@ -20,8 +98,8 @@ public final class MyArrayAndCollection {
     private MyArrayAndCollection() {
         System.out.println("test");
     }
+
     /**
-     *
      * @param arg test
      */
     public static void main(String[] arg) {
@@ -82,9 +160,9 @@ public final class MyArrayAndCollection {
  */
 class ShowHand {
     private final int MAX_PLAY_NUM = 5;
-    private  int PLAY_NUM = 5;
     int counter = 0;
     int firstPos = 0;
+    private int PLAY_NUM = 5;
     private String[] types = {"方块", "草花", "红心", "黑桃"};
     private String[] values = {"2", "3", "4", "5", "6",
             "7", "8", "9", "10", "J", "Q", "K", "A"};
@@ -95,6 +173,7 @@ class ShowHand {
     private LinkedList<String> temp = new LinkedList<String>();
     //Two-dimensional List
     private List<LinkedList<String>> originalCards = new LinkedList<>();
+
     /**
      * Initialize the deck.
      */
@@ -134,6 +213,7 @@ class ShowHand {
 //            System.out.print(iterator2.next() + " ");
 //        }
     }
+
     /**
      * @param names The Array to store the name of players
      */
@@ -148,8 +228,9 @@ class ShowHand {
         }
         PLAY_NUM = names.length;
     }
+
     /**
-     *Initialize the List that store the cards belong to player
+     * Initialize the List that store the cards belong to player
      */
     public void initPlayerCards() {
         for (int i = 0; i < PLAY_NUM; i++) {
@@ -158,8 +239,9 @@ class ShowHand {
             }
         }
     }
+
     /**
-     *Simulated licensing
+     * Simulated licensing
      */
     public void deliverCard(String firstPlayer) {
         counter++;
@@ -198,8 +280,9 @@ class ShowHand {
 //            System.out.println(playersCards[i].get(0));
 //        }
     }
+
     /**
-     *Show the handCards except the first
+     * Show the handCards except the first
      */
     public void showPlaysCards() {
         for (int i = 0; i < PLAY_NUM; i++) {
@@ -212,8 +295,9 @@ class ShowHand {
             System.out.println();
         }
     }
+
     /**
-     *compare to the size of the last card ,return the biggest one
+     * compare to the size of the last card ,return the biggest one
      */
     public String specificSize() {
         int max = 0;
@@ -252,6 +336,7 @@ class ShowHand {
         }
         return players[max];
     }
+
     /**
      *
      */
@@ -264,8 +349,9 @@ class ShowHand {
             toBet(i);
         }
     }
+
     /**
-     *Decide whether to place a bet
+     * Decide whether to place a bet
      */
     private int toBet(int i) {
         Scanner in = new Scanner(System.in);
@@ -289,8 +375,10 @@ class ShowHand {
         }
         return i;
     }
+
     /**
      * The process of simulating a game
+     *
      * @param showHand The object
      */
     public void play(ShowHand showHand) {
@@ -310,7 +398,7 @@ class ShowHand {
             showHand.showPlaysCards();
         }
         if (1 == PLAY_NUM) {
-            System.out.println("只剩一位玩家，" +  players[0] + "win");
+            System.out.println("只剩一位玩家，" + players[0] + "win");
         }
         if (0 == cards.size()) {
             System.out.println("这轮五张牌已发完毕，显示玩家的所有牌，请比较大小");
@@ -326,6 +414,7 @@ class ShowHand {
         }
     }
 }
+
 /**
  *
  */
@@ -338,6 +427,7 @@ class ThreadForChess1 extends Thread {
     ThreadForChess1(GoLang goLang) {
         this.goLang = goLang;
     }
+
     /**
      *
      */
@@ -347,14 +437,15 @@ class ThreadForChess1 extends Thread {
         }
     }
 }
+
 /**
  * Test1 for Array, Gomoku
  */
 class GoLang {
+    private final int boardSize = 15;
     private int xPos;
     private int yPos;
     private int role = 1;
-    private final int boardSize = 15;
     private String[][] chessboard = new String[boardSize][boardSize];
     private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -372,6 +463,7 @@ class GoLang {
         chessboard[7][8] = "❤ ";
         chessboard[8][9] = "❤ ";
     }
+
     /**
      * print the check board
      */
@@ -383,76 +475,78 @@ class GoLang {
             System.out.println();
         }
     }
+
     /**
      * Adjust who is win
-     * @return return
+     *
      * @param symbol pieces
-     * private boolean checkWin() {//检测当前是否由五子连线的方法，简述一下，这个方法其实很简单，
+     *               private boolean checkWin() {//检测当前是否由五子连线的方法，简述一下，这个方法其实很简单，
      *               只要我们在每一次落子的时候检查是否由五子连线就可以确保一旦有人胜出，我们就可以马上发现。先检查横线和竖线，再检查左右斜线。
-     *
-     *     boolean flag = false; //设置的标志，当由五子连线时就返回flag=false
-     *     int count = 1;        //计数当前由几颗棋子相连
-     *     int symbol = chessboard[x][y];
-     *     int i = 1;
-     *
-     *     while(((x+i)<16)&&symbol == chessboard[x+i][y]) {
-     *         count++;
-     *         i++;
-     *         }
-     *     i = 1;
-     *     while(((x-i)>=1)&&symbol == chessboard[x-i][y]) {
-     *         count++;
-     *         i++;
-     *         }
-     *     if(count>=5)
-     *         {flag = true;}
-     *     //Other direction
-     *     int count2 = 1;
-     *     int i2 = 1;
-     *     while(((y+i2)<16) && symbol == chessboard[x][y+i2]) {
-     *         count2++;
-     *         i2++;
-     *         }
-     *     i = 1;
-     *     while(((y-i2)>=1)&&symbol == chessboard[x][y-i2]) {
-     *         count2++;
-     *         i2++;
-     *         }
-     *     if(count2>=5)
-     *         {flag = true;}
-     *
-     *     int count3 = 1;
-     *     int i3 = 1;
-     *     while(((y-i3)>=1)&&((x+i3)<16)&&symbol == chessboard[x+i3][y-i3]) {
-     *         count3++;
-     *         i3++;
-     *         }
-     *     i = 1;
-     *     while(((x-i3)>=1)&&((y+i3)<16)&&symbol == chessboard[x-i3][y+i3]) {
-     *         count3++;
-     *         i3++;
-     *         }
-     *     if(count3>=5)
-     *         {flag = true;}
-     *
-     *     int count4 = 1;
-     *     int i4 = 1;
-     *     while(((y-i4)>=1)&&((x-i4)>=1)&&symbol == chessboard[x-i4][y-i4]) {
-     *         count4++;
-     *         i4++;
-     *         }
-     *     i = 1;
-     *     while(((x+i4)<16)&&((y+i4)<16)&&symbol == chessboard[x+i4][y+i4]) {
-     *         count4++;
-     *         i4++;
-     *         }
-     *     if(count4>=5)
-     *         {flag = true;}
-     *
-     *     return flag;
-     *
-     *    }
-     * }
+     *               <p>
+     *               boolean flag = false; //设置的标志，当由五子连线时就返回flag=false
+     *               int count = 1;        //计数当前由几颗棋子相连
+     *               int symbol = chessboard[x][y];
+     *               int i = 1;
+     *               <p>
+     *               while(((x+i)<16)&&symbol == chessboard[x+i][y]) {
+     *               count++;
+     *               i++;
+     *               }
+     *               i = 1;
+     *               while(((x-i)>=1)&&symbol == chessboard[x-i][y]) {
+     *               count++;
+     *               i++;
+     *               }
+     *               if(count>=5)
+     *               {flag = true;}
+     *               //Other direction
+     *               int count2 = 1;
+     *               int i2 = 1;
+     *               while(((y+i2)<16) && symbol == chessboard[x][y+i2]) {
+     *               count2++;
+     *               i2++;
+     *               }
+     *               i = 1;
+     *               while(((y-i2)>=1)&&symbol == chessboard[x][y-i2]) {
+     *               count2++;
+     *               i2++;
+     *               }
+     *               if(count2>=5)
+     *               {flag = true;}
+     *               <p>
+     *               int count3 = 1;
+     *               int i3 = 1;
+     *               while(((y-i3)>=1)&&((x+i3)<16)&&symbol == chessboard[x+i3][y-i3]) {
+     *               count3++;
+     *               i3++;
+     *               }
+     *               i = 1;
+     *               while(((x-i3)>=1)&&((y+i3)<16)&&symbol == chessboard[x-i3][y+i3]) {
+     *               count3++;
+     *               i3++;
+     *               }
+     *               if(count3>=5)
+     *               {flag = true;}
+     *               <p>
+     *               int count4 = 1;
+     *               int i4 = 1;
+     *               while(((y-i4)>=1)&&((x-i4)>=1)&&symbol == chessboard[x-i4][y-i4]) {
+     *               count4++;
+     *               i4++;
+     *               }
+     *               i = 1;
+     *               while(((x+i4)<16)&&((y+i4)<16)&&symbol == chessboard[x+i4][y+i4]) {
+     *               count4++;
+     *               i4++;
+     *               }
+     *               if(count4>=5)
+     *               {flag = true;}
+     *               <p>
+     *               return flag;
+     *               <p>
+     *               }
+     *               }
+     * @return return
      */
     private Boolean checkWin(String symbol) {
         for (int i = 0; i < boardSize; i++) {
@@ -460,7 +554,7 @@ class GoLang {
                 if (symbol == chessboard[i][j]) {
                     if (j <= 10 && symbol == chessboard[i][j + 1] && symbol == chessboard[i][j + 2]
                             && symbol == chessboard[i][j + 3] && symbol == chessboard[i][j + 4]) {
-                            return true;
+                        return true;
                     }
                     if (i <= 10 && symbol == chessboard[i + 1][j] && symbol == chessboard[i + 2][j]
                             && symbol == chessboard[i + 3][j] && symbol == chessboard[i + 4][j]) {
@@ -479,33 +573,37 @@ class GoLang {
         }
         return false;
     }
+
     /**
      * Input validity judgement
+     *
      * @param inputStr input
      * @return return
      */
     private boolean inputValidity(String inputStr) {
         String[] posStrArr;
-            try {
-                posStrArr = inputStr.split(",");
-                if (posStrArr[0].charAt(0) - 48 >= 1
-                        && posStrArr[0].charAt(0) - 48 <= 15
-                        && posStrArr[1].charAt(0) - 48 >= 1
-                        && posStrArr[1].charAt(0) - 48 <= 15) {
-                    xPos = Integer.parseInt(posStrArr[0]);
-                    yPos = Integer.parseInt(posStrArr[1]);
-                    return true;
-                } else {
-                    System.out.println("Illegal input,Please input number between 1~15");
-                    return false;
-                }
-            } catch (IndexOutOfBoundsException e) {
-                System.out.println("Illegal input,Please input number between 1~15;\n" + e);
+        try {
+            posStrArr = inputStr.split(",");
+            if (posStrArr[0].charAt(0) - 48 >= 1
+                    && posStrArr[0].charAt(0) - 48 <= 15
+                    && posStrArr[1].charAt(0) - 48 >= 1
+                    && posStrArr[1].charAt(0) - 48 <= 15) {
+                xPos = Integer.parseInt(posStrArr[0]);
+                yPos = Integer.parseInt(posStrArr[1]);
+                return true;
+            } else {
+                System.out.println("Illegal input,Please input number between 1~15");
                 return false;
             }
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Illegal input,Please input number between 1~15;\n" + e);
+            return false;
+        }
     }
+
     /**
      * Playing chess
+     *
      * @param goLang The object of GoLang
      * @return return
      */
@@ -517,8 +615,8 @@ class GoLang {
         System.out.println("Please enter the coordinates of x,y" + "（" + role + "）" + ":");
         try {
             if (inputValidity(br.readLine())) {
-                if (1 == role && "✖ " == goLang.chessboard[yPos - 1 ][xPos - 1]) {
-                    goLang.chessboard[yPos - 1 ][xPos - 1] = "❤ ";
+                if (1 == role && "✖ " == goLang.chessboard[yPos - 1][xPos - 1]) {
+                    goLang.chessboard[yPos - 1][xPos - 1] = "❤ ";
                     symbol = "❤ ";
                     if (goLang.checkWin(symbol)) {
                         System.out.println(role + "win");
@@ -526,8 +624,8 @@ class GoLang {
                         return true;
                     }
                     role = 2;
-                } else if ("✖ " == goLang.chessboard[yPos - 1 ][xPos - 1]) {
-                    goLang.chessboard[yPos - 1 ][xPos - 1] = "★ ";
+                } else if ("✖ " == goLang.chessboard[yPos - 1][xPos - 1]) {
+                    goLang.chessboard[yPos - 1][xPos - 1] = "★ ";
                     symbol = "★ ";
                     if (goLang.checkWin(symbol)) {
                         System.out.println(role + "win");
@@ -558,6 +656,7 @@ class GoLang {
  */
 class MyMap {
     private Map<String, Integer> map = new HashMap<>();
+
     /**
      * print
      */
@@ -605,6 +704,7 @@ class MyQueue {
         System.out.println(stack.pop() + ",delete");
         System.out.println(stack);
     }
+
     /**
      * print the test of ArrayDeque
      */
@@ -628,7 +728,7 @@ class MyList {
     private List books = new ArrayList();
 
     /**
-     *Operational tests on List
+     * Operational tests on List
      */
     public void printForList() {
         //ArrayList use initialCapacity to specify the length
@@ -677,34 +777,9 @@ class MyList {
 /**
  * Set is basically the same as Collection,
  * but Set dose not allow duplicate elements;
- *Implement class: HashSet, LinkedHashSet, TreeSet, EnumSet;
+ * Implement class: HashSet, LinkedHashSet, TreeSet, EnumSet;
  */
 class MySet {
-    /**
-     * Enum class
-     */
-    enum Season {
-        Spring, Summer, Fall, Winter
-    }
-    /**
-     * Custom Sort of TreeSet
-     */
-    class M {
-        private int age;
-        /**
-         *
-         */
-        M(int age) {
-            this.age = age;
-        }
-        /**
-         *@return implement "toString" to print M`s object,
-         * otherwise it will print the address of M`s object
-         */
-        public String toString() {
-            return "M[age:" + age + "]";
-        }
-    }
     /**
      * print the test of EnumSet
      */
@@ -714,6 +789,7 @@ class MySet {
         EnumSet es5 = EnumSet.complementOf(es4);
         System.out.println(es5);
     }
+
     /**
      * print the test of TreeSet
      * It implements SortSet
@@ -732,98 +808,43 @@ class MySet {
         ts.add(new M(9));
         System.out.println(ts);
     }
+
+    /**
+     * Enum class
+     */
+    enum Season {
+        Spring, Summer, Fall, Winter
+    }
+
+    /**
+     * Custom Sort of TreeSet
+     */
+    class M {
+        private int age;
+
+        /**
+         *
+         */
+        M(int age) {
+            this.age = age;
+        }
+
+        /**
+         * @return implement "toString" to print M`s object,
+         * otherwise it will print the address of M`s object
+         */
+        public String toString() {
+            return "M[age:" + age + "]";
+        }
+    }
 }
 
 /**
- * interface for LambdaQa test
- */
-interface MyInterface {
-    /**
-     * test
-     */
-    interface Eatable {
-        /**
-         *  test
-         */
-        void taste();
-    }
-
-    /**
-     * test
-     */
-    interface Flyable {
-        /**
-         * @param weather test
-         */
-        void fly(String weather);
-    }
-
-    /**
-     * test
-     */
-    interface Addable {
-        /**
-         * @param a test
-         * @param b test
-         * @return  test
-         */
-        int add(int a, int b);
-    }
-
-    /**
-     * test
-     */
-    @FunctionalInterface
-    interface Converter {
-        /**
-         *
-         * @param from test
-         * @return test
-         */
-        Integer convert(String from);
-    }
-
-    /**
-     * test
-     */
-    @FunctionalInterface
-    interface MyTest {
-        /**
-         *
-         * @param a test
-         * @param b test
-         * @param c test
-         * @return test
-         */
-        String test(String a, int b, int c);
-    }
-
-    /**
-     *
-     */
-    @FunctionalInterface
-    interface YourTest {
-        /**
-         *
-         * @param title test
-         * @return test
-         */
-        JFrame win(String title);
-    }
-
-    /**
-     *
-     * @param e test
-     */
-}
-
-/**
- *  The usage of LambdaQa
+ * The usage of LambdaQa
  */
 class LambdaQs implements MyInterface {
 
     /**
-     *
      * @param e test
      */
     public void eat(Eatable e) {
@@ -833,7 +854,6 @@ class LambdaQs implements MyInterface {
     }
 
     /**
-     *
      * @param f test
      */
     public void drive(Flyable f) {
@@ -842,7 +862,6 @@ class LambdaQs implements MyInterface {
     }
 
     /**
-     *
      * @param add test
      */
     public void toAdd(Addable add) {
@@ -850,7 +869,6 @@ class LambdaQs implements MyInterface {
     }
 
     /**
-     *
      * @param lq test
      */
     public void printForLam(LambdaQs lq) {
@@ -916,7 +934,6 @@ class MyCollection {
     private Map m = Collections.synchronizedMap(new HashMap());
 
 
-
     /**
      *
      */
@@ -947,6 +964,7 @@ class MyCollection {
             System.out.println(obj);
         }
     }
+
     /**
      * print usage for Iterator
      */
@@ -1025,9 +1043,9 @@ class SplitNumAndLetter {
  * Array
  */
 class MyArray {
-    private int[] c = {1, 2, 3 };
-    private int[][] d = {{1, 2, 3, 4, 5 },
-            {1, 33, 8, 9, 7 }};
+    private int[] c = {1, 2, 3};
+    private int[][] d = {{1, 2, 3, 4, 5},
+            {1, 33, 8, 9, 7}};
     private String[][] str1 = new String[][]{new String[3], new String[]{"Hello"}};
     private String[][] str2 = {new String[3], new String[]{"Hello"}};
 
@@ -1059,16 +1077,16 @@ class MyArray {
             }
         });
         System.out.println(Arrays.toString(arr3));
-    //insert element
-    ArrayList<String> list = new ArrayList<String>(); // 增加元素到list对象中
-    list.add("Item1");
-    list.add("Item2");
-    list.add(2, "Item3"); // 此条语句将会把“Item3”字符串增加到list的第3个位置。
-    list.add("Item4");
-    Iterator iterator = list.iterator();
+        //insert element
+        ArrayList<String> list = new ArrayList<String>(); // 增加元素到list对象中
+        list.add("Item1");
+        list.add("Item2");
+        list.add(2, "Item3"); // 此条语句将会把“Item3”字符串增加到list的第3个位置。
+        list.add("Item4");
+        Iterator iterator = list.iterator();
         while (iterator.hasNext()) {
-        System.out.println(iterator.next());
-    }
+            System.out.println(iterator.next());
+        }
     }
 }
 

@@ -1,10 +1,27 @@
-
-
 import java.io.*;
 import javax.swing.*;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+/**
+ *
+ */
+interface InterfaceTest {
+    public void test2();
+}
+
+/**
+ * Use AWithCallback interface to subscribe to business logic ,
+ * if it is not to exist ,it is ok
+ */
+interface Callback {
+    /**
+     * Response callback function
+     */
+    void slove();
+}
 
 /**
  * Main
@@ -13,10 +30,12 @@ public class Test1 {
 
     private int test = 0;
 
-    public Test1() {
-        System.out.println(test);
+    Test1() {
+        System.out.println(test + "test");
     }
-
+    static {
+        System.out.println("test1");
+    }
     /**
      * @param s The object of print
      */
@@ -25,12 +44,15 @@ public class Test1 {
     }
 
     /**
-     *
-     * @param arg  parameter for main
+     * @param arg parameter for main
      */
     public static void main(String[] arg) {
 
-        new TestForVariable().test();
+        System.out.println("test2");
+//        long i = 42l;
+//        System.out.println(i);
+//        new JiaJia().test();
+//        new TestForVariable().test();
 //        RegularExpression a = new RegularExpression();
 //        a.first();
 //        a.findGroup();
@@ -61,12 +83,55 @@ public class Test1 {
 //         Object[] AWithCallback= {1,2,3,5,4,8,6,7};
 //        perm BWithCallback = new perm(AWithCallback,1,8);
 //        System.out.println( AWithCallback[0]);
-        StaticTest staticTest = new StaticTest(String.valueOf("1946"));
+//        StaticTest staticTest = new StaticTest(String.valueOf("1946"));
 //        System.out.println(AWithCallback.isBornBoomer());7
         //System.out.println(String.valueOf("1946"));
+
+    }
+//    static {
+//        System.out.println("test3");
+//    }
+}
+/**
+ *
+ */
+class test2 {
+    public void test(){
+       Integer a = new Integer(1);
+       Integer b = 2;
+       int i = a.intValue();
     }
 }
+/**
+ *
+ */
+class JiaJia {
+    static {
+        System.out.println(1);
+    }
+    {
+        System.out.println("第一构造块");
+    }
+    JiaJia() {
+        System.out.println(2);
+    }
 
+        public void test() {
+        int count = 0;
+        int num = 0;
+        int count2 = 0;
+        for (int i = 0; i <= 100; i++) {
+            num = num + i;
+            count = count++;
+            count2++;
+        }
+        System.out.println(num * count);
+        System.out.println(num * count2);
+    }
+    public static void main(String[] arg) {
+        System.out.println("jia");
+    }
+}
 /**
  *
  */
@@ -79,6 +144,7 @@ class TestForVariable {
     String f;
     float g;
     double h;
+
     /**
      *
      */
@@ -100,12 +166,7 @@ class TestForVariable {
 //        }
     }
 }
-/**
- *
- */
-interface InterfaceTest {
-    public void test2();
-}
+
 /**
  * The test of Regular Expression(regex)
  */
@@ -120,8 +181,9 @@ class RegularExpression {
         System.out.println(b); //true
         //boolean b = Pattern.matches("a*b", "aaaab");//true
     }
+
     /**
-     *find() and group()
+     * find() and group()
      */
     public void findGroup() {
         String str = "I want to make friends,my tel:18579115585;"
@@ -135,6 +197,7 @@ class RegularExpression {
         }
 
     }
+
     /**
      * start and end and replace
      */
@@ -154,6 +217,7 @@ class RegularExpression {
 
 
     }
+
     /**
      * looking() and reset()
      */
@@ -179,16 +243,7 @@ class RegularExpression {
         //"kongyeku@163.com".matches("\\w{3,20}@\\w+.(com|org|cn|net|gov)");
     }
 }
-/**
- * Use AWithCallback interface to subscribe to business logic ,
- * if it is not to exist ,it is ok
- */
-interface Callback {
-    /**
-     * Response callback function
-     */
-     void slove();
-}
+
 /**
  * Implement the above interface,
  * registration implementation class of callback and response callback
@@ -202,6 +257,7 @@ class AWithCallback implements Callback {
     public void slove() {
         System.out.println("AWithCallback received the message that BWithCallback has solve the problem");
     }
+
     /**
      * Registration callback function
      */
@@ -222,6 +278,7 @@ class AWithCallback implements Callback {
         this.bWithCallback.call(this);
     }
 }
+
 /**
  * Implement callback function
  */
@@ -245,6 +302,7 @@ class BWithCallback {
  * Use transient to not serialize AWithCallback variable,
  * Note that when reading,the order of reading data must be
  * consistent with the order in which the data is stored
+ *
  * @author Alexia
  */
 class TransientTest {
@@ -309,16 +367,16 @@ class TransientTest {
 }
 
 /**
- *  test for Serializable
+ * test for Serializable
  */
 class User implements Serializable {
     private static final long serialVersionUID = 8294180014912103005L;
-
-    private String id;
     public static String username;
+    private String id;
     private transient String password;
     private String sex;
     private String identity;
+    private boolean isTrue;
 
     public boolean isTrue() {
         return isTrue;
@@ -328,22 +386,21 @@ class User implements Serializable {
         isTrue = aTrue;
     }
 
-    private boolean isTrue;
-
     /**
-     *@return test
+     * @return test
      */
     public String getId() {
         return id;
     }
+
     /**
      * @param id test
      */
     public void setId(String id) {
         this.id = id;
     }
+
     /**
-     *
      * @return test
      */
     public String getUsername() {
@@ -351,7 +408,6 @@ class User implements Serializable {
     }
 
     /**
-     *
      * @param username test
      */
     public void setUsername(String username) {
@@ -359,7 +415,6 @@ class User implements Serializable {
     }
 
     /**
-     *
      * @return test
      */
     public String getPasswd() {
@@ -367,7 +422,6 @@ class User implements Serializable {
     }
 
     /**
-     *
      * @param password test
      */
     public void setPasswd(String password) {
@@ -375,24 +429,26 @@ class User implements Serializable {
     }
 
     /**
-     *
      * @return test
      */
     public String getSex() {
         return sex;
     }
+
     /**
      * @param sex test
      */
-    public  void setSex(String sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
+
     /**
      * @return test
      */
     public String getIdentity() {
         return identity;
     }
+
     /**
      * @param identity test
      */
@@ -401,11 +457,13 @@ class User implements Serializable {
     }
 
 }
+
 /**
  * test for final
  */
 class TestForFinal {
     private int test = 0;
+
     /**
      *
      */
@@ -444,16 +502,16 @@ class TestForFinal {
     }
 
     /**
-     *
      * @return test
      */
     public static String getHello() {
 
-       return "hello";
+        return "hello";
     }
 
 
 }
+
 /**
  *
  */
@@ -480,8 +538,9 @@ class MyClassForFinal {
 //
 //    }
 //}
+
 /**
- *The test of super
+ * The test of super
  */
 class ParentClass {
     private int i = 0;
@@ -493,8 +552,8 @@ class ParentClass {
 //    ParentClass(){
 
 //    }
+
     /**
-     *
      * @param i test
      * @param j test
      */
@@ -502,6 +561,7 @@ class ParentClass {
         this.i = i;
         this.j = j;
     }
+
     /**
      * test
      */
@@ -513,8 +573,9 @@ class ParentClass {
 /**
  *
  */
-class  ChildClass extends ParentClass {
+class ChildClass extends ParentClass {
     private int k;
+
     ChildClass(int i, int j, int k) {
         //If the constructor of parent class has parameters(no empty constructor),
         //the child class must be explicitly called with "super"
@@ -531,8 +592,6 @@ class  ChildClass extends ParentClass {
 }
 
 
-
-
 /**
  * //排列问题
  */
@@ -540,12 +599,11 @@ class Perm {
     private int aWithCallback;
 
     /**
-     *
      * @param list test
-     * @param k test
-     * @param m test
+     * @param k    test
+     * @param m    test
      */
-    public void  perm1(Object[] list, int k, int m) {
+    public void perm1(Object[] list, int k, int m) {
         if (k == m) {
             for (int i = 0; i <= m; i++) {
                 System.out.println(list[i]);
@@ -562,10 +620,9 @@ class Perm {
     }
 
     /**
-     *
      * @param list test
-     * @param k test
-     * @param i test
+     * @param k    test
+     * @param i    test
      */
     public void swap(Object[] list, int k, int i) {
         Object temp;
@@ -582,7 +639,6 @@ class Perm {
  * static
  */
 class StaticTest {
-    private String birthString;
     private static String startString, endString;
 
     static {
@@ -590,6 +646,8 @@ class StaticTest {
         startString = String.valueOf("1946");
         endString = String.valueOf("1964");
     }
+
+    private String birthString;
 
     /**
      * @param birthString test
@@ -599,17 +657,17 @@ class StaticTest {
     }
 
     /**
-     * @return test
-     */
-    boolean isBornBoomer() {
-        return birthString.compareTo(startString) >= 0 && birthString.compareTo(endString) < 0;
-    }
-
-    /**
      *
      */
     public static void staticWay() {
         System.out.println("This is a STATIC way");
+    }
+
+    /**
+     * @return test
+     */
+    boolean isBornBoomer() {
+        return birthString.compareTo(startString) >= 0 && birthString.compareTo(endString) < 0;
     }
 }
 

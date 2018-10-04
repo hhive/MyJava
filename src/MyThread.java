@@ -6,18 +6,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.Thread.sleep;
 
-public class MyThread  {
+public class MyThread {
     private int i = 0;
 
-    public MyThread()  {
+    public MyThread() {
         System.out.println(i);
     }
 
-    public void my_print()  {
-        System.out.println("Test");
-    }
-
-    public static void main(String[] arg)  {
+    public static void main(String[] arg) {
 
         new ThreadPool().test();
 //        new CallableAndFutureTask().test();
@@ -63,37 +59,24 @@ public class MyThread  {
 //        System.out.println(a.isBornBoomer());
 //        System.out.println(String.valueOf("1946"));
     }
+
+    public void my_print() {
+        System.out.println("Test");
+    }
 }
+
 /**
  * class for Thread pool
  */
-class ThreadPool  {
+class ThreadPool {
     public void test() {
         try {
-            //线程池
-            int[] arr = new int[100];
-            Random rand = new Random();
-            int total = 0;
-            for (int i = 0, len = arr.length; i < len; i++)  {
-                int tmp = rand.nextInt(20);
-                total += (arr[i] = tmp);
-            }
-            System.out.println(total);
-            //创建一个通用池
-            ForkJoinPool pool = ForkJoinPool.commonPool();
-            Future<Integer> future = pool.submit(new CalTask(arr, 0, arr.length));
-            System.out.println(future.get());
-            pool.shutdown();
 
-            ForkJoinPool pool1 = new ForkJoinPool();
-            pool1.submit(new PrintTask(0, 300));
-            pool1.awaitTermination(2, TimeUnit.SECONDS);
-            pool1.shutdown();
             //创建一个固定线程数为6的线程池
             ExecutorService pool2 = Executors.newFixedThreadPool(6);
-            //使用lambda表达式创建Runable对象
-            Runnable target = () ->  {
-                for (int i = 0; i < 100; i++)  {
+            //使用lambda表达式创建Runnable对象
+            Runnable target = () -> {
+                for (int i = 0; i < 100; i++) {
                     System.out.println(Thread.currentThread().getName() + "的i值为：" + i);
                 }
             };
@@ -102,6 +85,32 @@ class ThreadPool  {
             pool2.submit(target);
             //关闭线程池
             pool2.shutdown();
+
+            //通过多线程分解任务，有返回值
+            int[] arr = new int[100];
+            Random rand = new Random();
+            int total = 0;
+            for (int i = 0, len = arr.length; i < len; i++) {
+                int tmp = rand.nextInt(20);
+                total += (arr[i] = tmp);
+            }
+            System.out.println(total);
+            //创建一个通用池
+            ForkJoinPool pool = ForkJoinPool.commonPool();
+            //提交可分解的CalTask任务
+            Future<Integer> future = pool.submit(new CalTask(arr, 0, arr.length));
+            System.out.println(future.get());
+            pool.shutdown();
+
+            //无返回值
+            ForkJoinPool pool1 = new ForkJoinPool();
+            pool1.submit(new PrintTask(0, 300));
+            //awaitTermination(long timeOut, TimeUnit unit)，当前线程阻塞，直到:
+            //等所有已提交的任务（包括正在跑的和队列中等待的）执行完；或者等超时时间到；
+            //或者线程被中断，抛出InterruptedException
+            pool1.awaitTermination(2, TimeUnit.SECONDS);
+            pool1.shutdown();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -110,61 +119,64 @@ class ThreadPool  {
 
     }
 }
+
 /**
- * 
+ *
  */
-class CallableAndFutureTask  {
+class CallableAndFutureTask {
     /**
-     * 
+     *
      */
-    public void test()  {
+    public void test() {
         //多线程Callable，FutureTask
-        FutureTask<Integer> task = new FutureTask<Integer>((Callable<Integer>)()->  {
+        FutureTask<Integer> task = new FutureTask<Integer>((Callable<Integer>) () -> {
             //call()
             int i = 0;
-            for (; i < 100; i++)  {
+            for (; i < 100; i++) {
                 System.out.println(Thread.currentThread().getName() + "的循环变量i的值：" + i);
             }
             return i;
         });
-        for (int i = 0; i<100; i++)  {
+        for (int i = 0; i < 100; i++) {
             System.out.println(Thread.currentThread().getName() + "的循环变量i的值：" + i);
-            if (20 == i)  {
-                new Thread(task,"有返回值的线程").start();
+            if (20 == i) {
+                new Thread(task, "有返回值的线程").start();
             }
         }
-        try  {
+        try {
             System.out.println("子线程的返回值：" + task.get());
-        } catch (Exception e)  {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
+
 /**
  * Runnable
  */
-class TestForRunnable implements Runnable  {
+class TestForRunnable implements Runnable {
     private int k;
     //多线程,implements Runnable
 
     /**
-     * 
+     *
      */
-    public void run()  {
-        for (; k < 100; k++)  {
+    public void run() {
+        for (; k < 100; k++) {
             System.out.println(Thread.currentThread().getName()
                     + " " + k);
         }
     }
+
     /**
-     * 
+     *
      */
-    public void test()  {
+    public void test() {
         //Runnable
-        for (int i = 0; i < 100; i++)  {
+        for (int i = 0; i < 100; i++) {
             System.out.println(Thread.currentThread().getName() + " " + i);
-            if (20 == i)  {
-                try  {
+            if (20 == i) {
+                try {
                     //共享k
                     TestForRunnable a = new TestForRunnable();
 //                  new Thread(a, "新线程1").start();
@@ -175,21 +187,22 @@ class TestForRunnable implements Runnable  {
                     t1.start();
                     t1.join();
                     t2.sleep(1);
-                } catch (Exception e)  {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
     }
 }
+
 /**
- * 
+ *
  */
 //多线程，extends Thread
 class TestForThread extends Thread {
     private int k;
+
     /**
-     *
      * @param name
      */
     public TestForThread(String name) {
@@ -211,28 +224,29 @@ class TestForThread extends Thread {
                 }
             }
 
-        }catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
     /**
      *
      */
     public void test() {
         //继承Thread
-        for (int i = 0; i< 100 ;i++) {
+        for (int i = 0; i < 100; i++) {
             System.out.println(Thread.currentThread().getName() + " " + i);
-            if(20 == i) {
+            if (20 == i) {
                 try {
                     //不共享k
-                   // new TestForThread("低级").start();
-                    TestForThread t1 =  new TestForThread("高级");
-                    TestForThread t2 =  new TestForThread("低级");
+                    // new TestForThread("低级").start();
+                    TestForThread t1 = new TestForThread("高级");
+                    TestForThread t2 = new TestForThread("低级");
                     t1.setPriority(Thread.MAX_PRIORITY);
                     t1.start();
                     t2.setPriority(Thread.MIN_PRIORITY);
                     t2.start();
-                   // t1.join();
+                    // t1.join();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -257,11 +271,12 @@ class ParkThread1 implements Runnable {
             park.parking();
     }
 }
-class Park  {
+
+class Park {
     //    private boolean[] sites = new boolean[3];
     //true可以停车，false不可以
     public int test;
-    private boolean[] sites =  {true,true,true};
+    private boolean[] sites = {true, true, true};
     private int num = 0;
 
     public synchronized void parking() {
@@ -269,11 +284,11 @@ class Park  {
         boolean flag = false;
         int k = 0;
         int i = 0;
-        try  {
+        try {
             for (; i < 3; i++) {
-                if(true == sites[i]) {
+                if (true == sites[i]) {
                     k = i;
-                    System.out.println(Thread.currentThread().getName() + "停进了" + (i+1) + "号位");
+                    System.out.println(Thread.currentThread().getName() + "停进了" + (i + 1) + "号位");
                     num++;
                     sites[k] = false;
                     flag = true;
@@ -286,7 +301,7 @@ class Park  {
                 System.out.println(Thread.currentThread().getName() + "无法进入，车位已满，请稍后");
                 notify();
                 wait();
-            } else  {
+            } else {
                 sleep(new Random().nextInt(10000) + 1000);
                 System.out.println(Thread.currentThread().getName() + "离开了" + (i + 1) + "号位");
                 num--;
@@ -309,55 +324,62 @@ class NALThread1 extends Thread {
     public NALThread1(NumAndLetter numAndLetter) {
         this.numAndLetter = numAndLetter;
     }
+
     public void run() {
         while (true) {
-            if(!numAndLetter.num())
+            if (!numAndLetter.num())
                 break;
         }
     }
 }
+
 class NALThread2 extends Thread {
     private NumAndLetter numAndLetter;
 
     public NALThread2(NumAndLetter numAndLetter) {
         this.numAndLetter = numAndLetter;
+
     }
+
     public void run() {
         while (true) {
-            if(!numAndLetter.letter())
+            if (!numAndLetter.letter())
                 break;
         }
     }
 }
+
 class NumAndLetter {
     private int i = 1;
     private int num = i + 2;
     private int k = 65;
+
     public synchronized boolean num() {
-        try  {
+        try {
             if (i <= 52) {
                 System.out.print(i);
-                System.out.print(i+1);
+                System.out.print(i + 1);
                 i = num;
                 num = i + 2;
                 notifyAll();
                 wait();
-            }else
+            } else
                 return false;
-        }catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return true;
     }
+
     public synchronized boolean letter() {
-        try  {
-            if (k<91) {
-                System.out.print((char)(k++));
+        try {
+            if (k < 91) {
+                System.out.print((char) (k++));
                 notifyAll();
                 wait();
-            }else
+            } else
                 return false;
-        }catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return true;
@@ -373,26 +395,28 @@ class CalTask extends RecursiveTask<Integer> {
     private int arr[];
     private int start;
     private int end;
+
     public CalTask(int[] arr, int start, int end) {
         this.arr = arr;
         this.start = start;
         this.end = end;
     }
+
     @Override
     protected Integer compute() {
         int sum = 0;
-        if(end - start < THRESHOLD) {
-            for (int i = start ; i < end ;i++)  {
+        if (end - start < THRESHOLD) {
+            for (int i = start; i < end; i++) {
                 sum += arr[i];
             }
             return sum;
-        }else  {
+        } else {
             int middle = (start + end) / 2;
-            CalTask left = new CalTask(arr,start, middle);
+            CalTask left = new CalTask(arr, start, middle);
             CalTask right = new CalTask(arr, middle, end);
             left.fork();
             right.fork();
-            return left.join()+right.join();
+            return left.join() + right.join();
         }
     }
 }
@@ -403,17 +427,19 @@ class PrintTask extends RecursiveAction {
     private static final int THRESHOLD = 50;
     private int start;
     private int end;
+
     public PrintTask(int start, int end) {
         this.start = start;
         this.end = end;
     }
+
     @Override
     protected void compute() {
-        if(end - start < THRESHOLD) {
-            for (int i = start ; i < end ;i++) {
+        if (end - start < THRESHOLD) {
+            for (int i = start; i < end; i++) {
                 System.out.println(Thread.currentThread().getName() + "的i值：" + i);
             }
-        }else  {
+        } else {
             int middle = (start + end) / 2;
             PrintTask left = new PrintTask(start, middle);
             PrintTask right = new PrintTask(middle, end);
@@ -427,7 +453,7 @@ class PrintTask extends RecursiveAction {
 class production_Thread1 extends Thread {
     private Production production;
 
-    public production_Thread1(String name,Production production) {
+    public production_Thread1(String name, Production production) {
         super(name);
         this.production = production;
     }
@@ -444,17 +470,18 @@ class production_Thread1 extends Thread {
 class production_Thread2 extends Thread {
     private Production production;
 
-    public production_Thread2(String name,Production production) {
+    public production_Thread2(String name, Production production) {
         super(name);
         this.production = production;
     }
 
     public void run() {
-        for (int i = 0; i<100 ;i++)
+        for (int i = 0; i < 100; i++)
             production.consume();
     }
 }
-class Production  {
+
+class Production {
 
 //    private final Lock lock = new ReentrantLock();
 //    private final Condition condition = lock.newCondition();
@@ -463,11 +490,11 @@ class Production  {
     int MIN_PRODUCT = 0;
     volatile int product = 0;
 
-    public synchronized void product()  {
+    public synchronized void product() {
         //lock和condition
         //lock.lock();
-        try  {
-            if (this.product >= MAX_PRODUCT)  {
+        try {
+            if (this.product >= MAX_PRODUCT) {
                 //condition.await();
                 wait();
                 System.out.println("产品已满");
@@ -477,7 +504,7 @@ class Production  {
             System.out.println(Thread.currentThread().getName() + "生产了" + this.product + "个产品");
             notifyAll();
             //condition.signalAll();
-        } catch (InterruptedException e)  {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 //        finally  {
@@ -485,10 +512,10 @@ class Production  {
 //        }
     }
 
-    public synchronized void consume()  {
+    public synchronized void consume() {
         //lock.lock();
-        try  {
-            if (this.product <= MIN_PRODUCT)  {
+        try {
+            if (this.product <= MIN_PRODUCT) {
                 // condition.await();
                 System.out.println("缺货");
                 wait();
@@ -498,7 +525,7 @@ class Production  {
             this.product--;
             notifyAll();
             //condition.signalAll();
-        } catch (InterruptedException e)  {
+        } catch (InterruptedException e) {
             e.printStackTrace();
 //        }finally  {
 //            lock.unlock();
@@ -512,46 +539,49 @@ class Account {
     private String accountNo;
     private double balance;
     private double drawAmount;
-    public Account() { }
 
-    public Account(String accountNo,double balance) {
-        this.accountNo = accountNo;
-        this.balance  = balance;
+    public Account() {
     }
 
-    public void setAccountNo(String accountNo) {
+    public Account(String accountNo, double balance) {
         this.accountNo = accountNo;
+        this.balance = balance;
     }
 
     public String getAccountNo() {
         return accountNo;
     }
 
-    public void setBalance(double balance)  {
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
     public synchronized void draw(double drawAmount) {
-        if(balance >= drawAmount) {
+        if (balance >= drawAmount) {
             System.out.println(Thread.currentThread().getName() + "取钱成功！吐出钞票：" + drawAmount);
-            try  {
+            try {
                 sleep(1);
-            }catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             balance -= drawAmount;
             System.out.println("\t余额为：" + balance);
-        }
-        else  {
+        } else {
             System.out.println(Thread.currentThread().getName() + "取钱失败！余额不足！");
         }
     }
 }
+
 class DrawThread extends Thread {
     private Account account;
     //取钱数
     private double drawAmount;
-    public DrawThread(String name,Account account,double drawAmount) {
+
+    public DrawThread(String name, Account account, double drawAmount) {
         super(name);
         this.account = account;
         this.drawAmount = drawAmount;

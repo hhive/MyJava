@@ -10,14 +10,27 @@ import java.util.regex.Pattern;
  */
 public class Exercise {
     /**
-     *
      * @param arg
      */
     public static void main(String[] arg) {
-        new StringCatcher().print();
+        new Max().test();
+//        new StringCatcher().print();
     }
 }
-
+/**
+ *有 n 个学生站成一排，每个学生有一个能力值，
+ * 牛牛想从这 n 个学生中按照顺序选取 k 名学生，
+ * 要求相邻两个学生的位置编号的差不超过 d，使得这 k 个学生的能力值的乘积最大，你能返回最大的乘积吗？
+ */
+class Max {
+    ArrayList<Integer> student = new ArrayList<>();
+    public void test() {
+        student.add(1);
+        student.add(2);
+        System.out.println(student.get(2));
+        int i = Collections.binarySearch(student,1);
+    }
+}
 /**
  * 从第一个元素开始，按照元素的大小移动，
  * 正数后移，负数前移，0不移，看是否能越界，能true
@@ -35,7 +48,7 @@ class YueJie {
             a[i] = sc.nextInt();
         }
         try {
-            for (int i = 0; i < size;) {
+            for (int i = 0; i < size; ) {
                 i += a[i];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -43,6 +56,7 @@ class YueJie {
         }
     }
 }
+
 /**
  * A='youzan',B='zanyou',切割A为两部分并换位置再连接成B
  */
@@ -77,6 +91,7 @@ class Kills {
     int i;
     List<Integer> kills = new ArrayList<>();
     List<Integer> store = new ArrayList<>();
+
     /**
      *
      */
@@ -89,7 +104,7 @@ class Kills {
         }
         System.out.println(kills);
         int count = 0;
-        for (int i = 0;; i = 0) {
+        for (int i = 0; ; i = 0) {
             while (kills.size() > i + 1) {
                 if (kills.get(i) > kills.get(i + 1)) {
                     store.add(kills.get(i + 1));
@@ -103,7 +118,7 @@ class Kills {
             if (store.size() == 0) {
                 break;
             }
-            while (store.size() >  i) {
+            while (store.size() > i) {
                 //remove(int position) and remove(object object)
                 kills.remove(store.get(i));
                 i++;
@@ -115,10 +130,23 @@ class Kills {
     }
 
 }
+
 /**
  *
  */
 class GaiFeng {
+    /**
+     * @param list
+     * @return
+     */
+    private static double averageOfList(ArrayList<Integer> list) {
+        int sum = 0;
+        for (int i = 0; i < list.size(); i++) {
+            sum += list.get(i);
+        }
+        return sum / (double) list.size();
+    }
+
     /**
      *
      */
@@ -177,7 +205,7 @@ class GaiFeng {
     }
 
     /**
-     *from dalao
+     * from dalao
      */
     public void gaiFeng2() {
         Scanner in = new Scanner(System.in);
@@ -222,32 +250,20 @@ class GaiFeng {
             System.out.println(resList.get(i));
         }
     }
-
-    /**
-     *
-     * @param list
-     * @return
-     */
-    private static double averageOfList(ArrayList<Integer> list) {
-        int sum = 0;
-        for (int i = 0; i < list.size(); i++) {
-            sum += list.get(i);
-        }
-        return sum / (double) list.size();
-    }
 }
 
 /**
  *
  */
 class QuJian {
-    private int n,k,t;
+    private int n, k, t;
     private int chongfu = 0;
     private int count = 0;
+
     /**
      *
      */
-    public void myQuJian(){
+    public void myQuJian() {
         Scanner sc = new Scanner(System.in);
         String s = sc.nextLine();
         String[] ss = s.split(" ");
@@ -275,6 +291,7 @@ class QuJian {
         System.out.println(count);
     }
 }
+
 /**
  * java 的链表 ；
  */
@@ -323,11 +340,12 @@ class Cross {
             for (String x : ss1) {
                 System.out.println(x);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
         }
     }
 }
+
 /**
  * match child String
  */
