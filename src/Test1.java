@@ -6,24 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
- */
-interface InterfaceTest {
-    public void test2();
-}
-
-/**
- * Use AWithCallback interface to subscribe to business logic ,
- * if it is not to exist ,it is ok
- */
-interface Callback {
-    /**
-     * Response callback function
-     */
-    void slove();
-}
-
-/**
  * Main
  */
 public class Test1 {
@@ -48,7 +30,8 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-        System.out.println("test2");
+
+//        System.out.println("test2");
 //        long i = 42l;
 //        System.out.println(i);
 //        new JiaJia().test();
@@ -92,6 +75,28 @@ public class Test1 {
 //        System.out.println("test3");
 //    }
 }
+/**
+ *
+ */
+
+/**
+ *
+ */
+interface InterfaceTest {
+    public void test2();
+}
+
+/**
+ * Use AWithCallback interface to subscribe to business logic ,
+ * if it is not to exist ,it is ok
+ */
+interface Callback {
+    /**
+     * Response callback function
+     */
+    void slove();
+}
+
 /**
  *
  */
