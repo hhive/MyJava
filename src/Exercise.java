@@ -29,7 +29,7 @@ class Max {
         student.add(2);
         System.out.println(student.get(2));
         int i = Collections.binarySearch(student,1);
-        Math.
+
     }
 }
 /**

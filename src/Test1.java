@@ -33,7 +33,15 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-
+        try {
+            new test2().sleepAnfInter();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+//        String a = "abc";
+//        String b = "a" + "bc";
+//        System.out.println(a == b);
+//        System.out.println(new test2().jc(4));
 //        System.out.println("test2");
 //        long i = 42l;
 //        System.out.println(i);
@@ -108,6 +116,33 @@ class test2 {
        Integer a = new Integer(1);
        Integer b = 2;
        int i = a.intValue();
+    }
+    public int jc(int num) {
+
+        if (1 == num) {
+            return num;
+        } else {
+            num = num * jc(num - 1);
+        }
+        return num;
+    }
+    public void sleepAnfInter() throws Exception {
+        Thread t = new Thread()  {
+            public void run() {
+                System.out.println(1);
+            }
+        };
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+            e.printStackTrace();
+            System.out.println(4);
+            throw new RuntimeException("2");
+        }
+        t.start();
+        t.join();
+        System.out.println(3);
     }
 }
 /**
