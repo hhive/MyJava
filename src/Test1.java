@@ -33,11 +33,18 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-        try {
-            new test2().sleepAnfInter();
-        } catch (Exception e) {
-            System.out.println(e);
+        int x = 0;
+        int y = 0;
+        int k = 0;
+        for (int z = 0; z < 5; z++) {
+            if ((++x > 2) && (++y > 2) && (k++ > 2))
+            {
+                x++;
+                ++y;
+                k++;
+            }
         }
+        System.out.println(x + "" +y + "" +k);
 //        String a = "abc";
 //        String b = "a" + "bc";
 //        System.out.println(a == b);
@@ -143,6 +150,19 @@ class test2 {
         t.start();
         t.join();
         System.out.println(3);
+    }
+    public void test2() {
+        double e = 3.14;
+        double a = 3.14D;
+        double b = 5.2e12;
+        System.out.println(e);
+        System.out.println(b);
+        System.out.println(a);
+        String c = "abc";
+        final String d = c;
+        c = "efg";
+        System.out.println(c);
+        System.out.println(d);
     }
 }
 /**
