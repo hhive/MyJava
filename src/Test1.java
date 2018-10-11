@@ -1,3 +1,5 @@
+import javafx.scene.shape.Circle;
+
 import java.io.*;
 import javax.swing.*;
 import java.lang.reflect.Constructor;
@@ -33,18 +35,8 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-        int x = 0;
-        int y = 0;
-        int k = 0;
-        for (int z = 0; z < 5; z++) {
-            if ((++x > 2) && (++y > 2) && (k++ > 2))
-            {
-                x++;
-                ++y;
-                k++;
-            }
-        }
-        System.out.println(x + "" +y + "" +k);
+        System.out.println(new test2().finallyTest());
+
 //        String a = "abc";
 //        String b = "a" + "bc";
 //        System.out.println(a == b);
@@ -76,6 +68,7 @@ public class Test1 {
 
 //        new TestForFinal();
 //        new MyArray().myprint();
+//        new ChildClass().childFunction();
 //        ParentClass AWithCallback = new ChildClass(4, 5, 6);
 //        ChildClass BWithCallback = new ChildClass(1, 2, 3);
 //        ((ChildClass) AWithCallback).childFunction(); //true
@@ -151,7 +144,7 @@ class test2 {
         t.join();
         System.out.println(3);
     }
-    public void test2() {
+    public void doubleTest() {
         double e = 3.14;
         double a = 3.14D;
         double b = 5.2e12;
@@ -163,6 +156,43 @@ class test2 {
         c = "efg";
         System.out.println(c);
         System.out.println(d);
+    }
+    public void jiaJiaTest() {
+        int x = 0;
+        int y = 0;
+        int k = 0;
+        for (int z = 0; z < 5; z++) {
+            if ((++x > 2) && (++y > 2) && (k++ > 2)) {
+                x++;
+                ++y;
+                k++;
+            }
+        }
+        System.out.println(x + "" +y + "" +k);
+    }
+    public static Boolean forEachTest1(char c) {
+        System.out.println(c);
+        return true;
+    }
+    public void forEachTest2() {
+        int i = 0;
+        for (forEachTest1('A'); forEachTest1('B') && (i < 2); forEachTest1('C')) {
+            i++;
+            forEachTest1('D');
+        }
+    }
+    public int finallyTest() {
+
+        try {
+            System.out.println(1 / 0);
+            return 1;
+        } catch (Exception e) {
+            System.out.println(2);
+            return 2;
+        } finally {
+            System.out.println(3);
+            return 3;
+        }
     }
 }
 /**
@@ -608,13 +638,14 @@ class MyClassForFinal {
 class ParentClass {
     private int i = 0;
     private int j = 0;
-
+    protected String z = "parent";
+    String g = "parent2";
     /**
      * null constructor
      */
-//    ParentClass(){
+    ParentClass(){
 
-//    }
+    }
 
     /**
      * @param i test
@@ -631,6 +662,9 @@ class ParentClass {
     public void parentFunction() {
         System.out.println(1);
     }
+    public void onlyParent() {
+        System.out.println(2);
+    }
 }
 
 /**
@@ -638,7 +672,9 @@ class ParentClass {
  */
 class ChildClass extends ParentClass {
     private int k;
+    String z = "child";
 
+    ChildClass() {}
     ChildClass(int i, int j, int k) {
         //If the constructor of parent class has parameters(no empty constructor),
         //the child class must be explicitly called with "super"
@@ -650,7 +686,7 @@ class ChildClass extends ParentClass {
      * test
      */
     public void childFunction() {
-        System.out.println(2);
+        System.out.println(z + " " + super.z + " " + g);
     }
 }
 
