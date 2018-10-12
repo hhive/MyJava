@@ -98,17 +98,6 @@ interface InterfaceTest {
 }
 
 /**
- * Use AWithCallback interface to subscribe to business logic ,
- * if it is not to exist ,it is ok
- */
-interface Callback {
-    /**
-     * Response callback function
-     */
-    void slove();
-}
-
-/**
  *
  */
 class test2 {
@@ -336,7 +325,16 @@ class RegularExpression {
         //"kongyeku@163.com".matches("\\w{3,20}@\\w+.(com|org|cn|net|gov)");
     }
 }
-
+/**
+ * Use AWithCallback interface to subscribe to business logic ,
+ * if it is not to exist ,it is ok
+ */
+interface Callback {
+    /**
+     * Response callback function
+     */
+    void slove();
+}
 /**
  * Implement the above interface,
  * registration implementation class of callback and response callback
