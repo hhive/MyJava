@@ -13,10 +13,122 @@ public class Exercise {
      * @param arg
      */
     public static void main(String[] arg) {
-        new Max().test();
+
+            new ZhiYinShu().test();
+//        String info = "Java1";
+//        System.out.println( new CompareChar().encrypt(info));
+
+//        new Max().test();
 //        new StringCatcher().print();
     }
 }
+/**
+ * 质因数分解
+ */
+class ZhiYinShu {
+    public void test() {
+        Scanner sc = new Scanner(System.in);
+        int num = sc.nextInt();
+        ArrayList<Integer> yinZi = new ArrayList<>();
+        int half = num / 2;
+        for (int i = 2; i <= half; i++) {
+            if (num % i == 0) {
+                yinZi.add(i);
+                num = num / i;
+                i = 1;
+            }
+        }
+        System.out.println(yinZi.toString());
+    }
+}
+/**
+ *
+ */
+class DiaoDu {
+    public void test() {
+        Scanner sc = new Scanner(System.in);
+        int P = sc.nextInt();
+        int M = sc.nextInt();
+        int[] p = new int[P];
+        for (int i = 0; i < P; i++) {
+            p[i] = sc.nextInt();
+        }
+        int[] m = new int[M];
+        for (int i = 0; i < P; i++) {
+            p[i] = sc.nextInt();
+        }
+        int[][] FLOPS = new int[P][M];
+        for (int i = 0; i < P; i++) {
+            for (int j = 0; j < M; j++) {
+                FLOPS[i][j] = sc.nextInt();
+            }
+        }
+        int[] lie = new int[M];
+        int[] Max = new int[P];
+        for (int i = 0; i < P; i++) {
+            int max = 0;
+            for (int j = 0; j < M - 1; j++) {
+                if (FLOPS[i][j + 1] > FLOPS[i][max] && notLie(lie,j)) {
+                    max = j +1;
+                }
+                Max[i] = max;
+            }
+        }
+    }
+    public boolean notLie(int[] lie,int j) {
+        return false;
+    }
+}
+/**
+ * 宝藏在M米，甲乙每次挖A，B米，谁先挖到
+ */
+class BaoZang {
+    public void test() {
+        Scanner sc = new Scanner(System.in);
+        int A = sc.nextInt();
+        int B = sc.nextInt();
+        int size = sc.nextInt();
+        int flagA = 1;
+        int flagB = -1;
+        int[] des = new int[size];
+        for (int i = 0; i < size; i++) {
+                des[i] = sc.nextInt();
+        }
+        int get = 0;
+        int[] res = new int[size];
+        for (int i = 0; i < size; i++) {
+            while (true) {
+                get += A;
+                if (get == des[i]) {
+                    res[i] = flagA;
+                    get = 0;
+                    break;
+                }
+                get += B;
+                if (get == des[i]) {
+                    get = 0;
+                    res[i] = flagB;
+                    break;
+                }
+            }
+        }
+        for (int x : res) {
+            System.out.print(x + " ");
+        }
+//        for (int i = 0; i < size; i++) {
+//            if (i == size - 1) {
+//                System.out.print(res[i]);
+//            } else {
+//                System.out.print(res[i] + " ");
+//            }
+//        }
+    }
+}
+/**
+ *
+ * M{,N}.对称对总排列
+ */
+
 /**
  *有 n 个学生站成一排，每个学生有一个能力值，
  * 牛牛想从这 n 个学生中按照顺序选取 k 名学生，
@@ -25,11 +137,61 @@ public class Exercise {
 class Max {
     ArrayList<Integer> student = new ArrayList<>();
     public void test() {
-        student.add(1);
-        student.add(2);
-        System.out.println(student.get(2));
-        int i = Collections.binarySearch(student,1);
+        Scanner sc = new Scanner(System.in);
+        while(sc.hasNext()) {
+            //总人数
+            int n = sc.nextInt();
+            //学生能力值数组，第i个人直接对应arr[i]
+            int[] arr = new int[n + 1];
+            //初始化
+            for (int i = 1; i <= n; i++) {//人直接对应坐标
+                arr[i] = sc.nextInt();
+            }
+            //选择的学生数
+            int kk = sc.nextInt();
+            //间距
+            int dd = sc.nextInt();
 
+            /**
+             * 递推的时候，以f[one][k]的形式表示
+             * 其中：one表示最后一个人的位置，k为包括这个人，一共有k个人
+             * 原问题和子问题的关系：f[one][k]=max{f[left][k-1]*arr[one],g[left][k-1]*arr[one]}
+             */
+            //规划数组
+            long[][] f = new long[n + 1][kk + 1];//人直接对应坐标,n和kk都要+1
+            long[][] g = new long[n + 1][kk + 1];
+            //初始化k=1的情况
+            for(int one = 1;one<=n;one++){
+                f[one][1] = arr[one];
+                g[one][1] = arr[one];
+            }
+            //自底向上递推
+            for(int k=2;k<=kk;k++) {
+                for(int one = k;one<=n;one++) {
+                    //求解当one和k定的时候，最大的分割点
+                    long tempmax = Long.MIN_VALUE;
+                    long tempmin = Long.MAX_VALUE;
+                    for(int left = Math.max(k-1,one-dd);left<=one-1;left++){
+                        if(tempmax<Math.max(f[left][k-1]*arr[one],g[left][k-1]*arr[one])){
+                            tempmax=Math.max(f[left][k-1]*arr[one],g[left][k-1]*arr[one]);
+                        }
+                        if(tempmin>Math.min(f[left][k-1]*arr[one],g[left][k-1]*arr[one])){
+                            tempmin=Math.min(f[left][k-1]*arr[one],g[left][k-1]*arr[one]);
+                        }
+                    }
+                    f[one][k] = tempmax;
+                    g[one][k] = tempmin;
+                }
+            }
+            //n选k最大的需要从最后一个最大的位置选
+            long result = Long.MIN_VALUE;
+            for(int one = kk;one<=n;one++){
+                if(result<f[one][kk]){
+                    result = f[one][kk];
+                }
+            }
+            System.out.println(result);
+        }
     }
 }
 /**
@@ -58,32 +220,7 @@ class YueJie {
     }
 }
 
-/**
- * A='youzan',B='zanyou',切割A为两部分并换位置再连接成B
- */
-class StringCatcher {
-    /**
-     *
-     */
-    public void print() {
-        int count = 0;
-        boolean flag = false;
-        String c = "aa";
-//        StringBuilder b = new StringBuilder("zanyou");
-        String b = "zanyou";
-        StringBuilder a = new StringBuilder("youzan");
-        while (!flag && count < a.length()) {
-            char temp = a.charAt(0);
-            a.deleteCharAt(0);
-            a.append(temp);
-            flag = a.toString().equals(b);
-            count++;
-        }
-        System.out.println(flag);
-        System.out.println(a);
-        System.out.println(count);
-    }
-}
+
 
 /**
  *
@@ -347,33 +484,3 @@ class Cross {
     }
 }
 
-/**
- * match child String
- */
-class MatchString {
-    /**
-     *
-     */
-    public void matchString() {
-        int count = 0;
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            String p = br.readLine();
-            Matcher m = Pattern.compile("a").matcher(p);
-            Matcher m1 = Pattern.compile("aa").matcher(p);
-            Matcher m2 = Pattern.compile("aaa").matcher(p);
-            Matcher m3 = Pattern.compile("b").matcher(p);
-            Matcher m4 = Pattern.compile("bb").matcher(p);
-            if (m.find()) count++;
-            if (m.find()) count++;
-            if (m.find()) count++;
-            if (m.find()) count++;
-            if (m.find()) count++;
-            System.out.println(count);
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-
-    }
-}

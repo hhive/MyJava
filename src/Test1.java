@@ -35,7 +35,8 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-        System.out.println(new test2().finallyTest());
+        long a = 2;
+        new test2().leiJai(a);
 
 //        String a = "abc";
 //        String b = "a" + "bc";
@@ -102,9 +103,15 @@ interface InterfaceTest {
  */
 class test2 {
     public void test(){
+
        Integer a = new Integer(1);
        Integer b = 2;
        int i = a.intValue();
+       a = 111234;
+       String c = "" + a;
+       c += a;
+       Long e = Long.parseLong(c);
+        System.out.println(e);
     }
     public int jc(int num) {
 
@@ -182,6 +189,18 @@ class test2 {
             System.out.println(3);
             return 3;
         }
+    }
+    public void leiJai(long a) {
+        long s = 0;
+        String temp = "";
+        Scanner sc = new Scanner(System.in);
+        int size = sc.nextInt();
+        for (int i = 0; i < size; i++) {
+            temp += a;
+            System.out.println(temp);
+            s += Long.parseLong(temp);
+        }
+        System.out.println(s);
     }
 }
 /**

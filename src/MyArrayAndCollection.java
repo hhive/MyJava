@@ -104,6 +104,7 @@ public final class MyArrayAndCollection {
      */
     public static void main(String[] arg) {
 
+        new MyMap().bianLi();
 //        int[] a = {1,2};
 //        System.out.println(Arrays.binarySearch(a,1));
 //        String[] b = {"玩家1","玩家2"};
@@ -130,8 +131,8 @@ public final class MyArrayAndCollection {
 //        myMap.printForHashMap();
 //        MyQueue myQueue = new MyQueue();
 //        myQueue.printForQueue();
-        MyList myList = new MyList();
-        myList.printForList();
+//        MyList myList = new MyList();
+//        myList.printForList();
 
 //        ParentClass a = new ChildClass(4, 5, 6);
 //        ChildClass b = new ChildClass(1, 2, 3);
@@ -155,6 +156,14 @@ public final class MyArrayAndCollection {
     }
 }
 
+class CollectionTest {
+    public void test() {
+        ArrayList list = new ArrayList(10);
+        list.add(10);
+        System.out.println(list.size());
+
+    }
+}
 /**
  * test2 for showHand
  */
@@ -678,6 +687,70 @@ class MyMap {
         map.computeIfPresent("Java", (key, value) -> ((String) key).length());
         System.out.println(map);
     }
+    public void bianLi() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("1", "a");
+        map.put("2", "b");
+        map.put("3", "ab");
+        map.put("4", "ab");
+        map.put("5", "ab");// 和上面相同 ， 会自己筛选
+//        Map<String,String> map=new HashMap<String,String>();
+//        for(int i=0;i<10000;i++){
+//            map.put(String.valueOf(i),String.valueOf(i) );
+//        }
+
+        System.out.println(map.size());
+        // 第一种：
+        /*
+         * Set<Integer> set = map.keySet(); //得到所有key的集合
+         *
+         * for (Integer in : set) { String str = map.get(in);
+         * System.out.println(in + "     " + str); }
+         */
+        System.out.println("第一种：通过Map.keySet遍历key和value：");
+        long start = System.nanoTime();
+        for (String in : map.keySet()) {
+            //map.keySet()返回的是所有key的值
+            String str = map.get(in);//得到每个key多对用value的值
+            System.out.println(in + "     " + str);
+        }
+        long end = System.nanoTime();
+        System.out.println("第一种耗时：" + (end - start)/1000 + "微秒");
+
+        // 第二种：
+        System.out.println("第二种：通过Map.entrySet使用iterator遍历key和value：");
+        start = System.nanoTime();
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> entry = it.next();
+            System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
+        }
+        end = System.nanoTime();
+        System.out.println("第二种耗时：" + (end - start)/1000 + "微秒");
+
+        // 第三种：推荐，尤其是容量大时
+        System.out.println("第三种：通过Map.entrySet遍历key和value");
+        start = System.nanoTime();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            //Map.entry<Integer,String> 映射项（键-值对）  有几个方法：用上面的名字entry
+            //entry.getKey() ;entry.getValue(); entry.setValue();
+            //map.entrySet()  返回此映射中包含的映射关系的 Set视图。
+            System.out.println("key= " + entry.getKey() + " and value= "
+                    + entry.getValue());
+        }
+        end = System.nanoTime();
+        System.out.println("第三种耗时：" + (end - start)/1000 + "微秒");
+        // 第四种：
+
+        System.out.println("第四种：通过Map.values()遍历所有的value，但不能遍历key");
+        start = System.nanoTime();
+        for (String v : map.values()) {
+            System.out.println("value= " + v);
+        }
+        end = System.nanoTime();
+        System.out.println("第四种耗时：" + (end - start)/1000 + "微秒");
+
+    }
 }
 
 /**
@@ -1003,39 +1076,6 @@ class MyCollection {
         //mapToInt()获取原有的Stream对应的IntStream
         books.stream().mapToInt(ele -> ((String) ele).length())
                 .forEach(System.out::println);
-    }
-}
-
-/**
- *
- */
-class SplitNumAndLetter {
-    private String zifu = "ds123d4s4dqwAw57vv58gsTg578q93JNH21dsd2445";
-    private int[] num = new int[100];
-    private char[] letter = new char[100];
-    private int k = 0;
-    private int j = 0;
-
-    /**
-     * separate numbers and letters
-     */
-    public void mySplit() {
-        for (int i = 0; i < zifu.length(); i++) {
-            if (zifu.charAt(i) >= 'A' && zifu.charAt(i) <= 'z') {
-                letter[k++] = zifu.charAt(i);
-            } else {
-                num[j++] = zifu.charAt(i) - 48;
-            }
-        }
-        for (int i = 0; i < k; i++) {
-            System.out.print(letter[i]);
-        }
-        System.out.println();
-        for (int i = 0; i < j; i++) {
-            System.out.print(num[i]);
-        }
-//       System.out.println(Arrays.toString(letter));
-//       System.out.println(Arrays.toString(num));
     }
 }
 
