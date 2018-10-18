@@ -31,6 +31,7 @@ class ZhiYinShu {
         int num = sc.nextInt();
         ArrayList<Integer> yinZi = new ArrayList<>();
         int half = num / 2;
+        System.out.println(half);
         for (int i = 2; i <= half; i++) {
             if (num % i == 0) {
                 yinZi.add(i);
