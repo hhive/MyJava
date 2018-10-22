@@ -36,7 +36,7 @@ public class Test1 {
     public static void main(String[] arg) {
 
         long a = 2;
-        new test2().leiJai(a);
+        new test2().beverages();
 
 //        String a = "abc";
 //        String b = "a" + "bc";
@@ -201,6 +201,23 @@ class test2 {
             s += Long.parseLong(temp);
         }
         System.out.println(s);
+    }
+    public void beverages() {
+        int n = 1;
+        int m = 0;
+        for (int i = 9; i > 0; i--) {
+            if (3 == n) {
+                n = 1;
+                i++;
+            } else {
+                n++;
+            }
+            m++;
+        }
+        System.out.println(m);
+    }
+    private void test3() {
+
     }
 }
 /**
