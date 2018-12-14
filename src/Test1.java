@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.*;
+import java.sql.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,9 +36,9 @@ public class Test1 {
      */
     public static void main(String[] arg) {
 
-        long a = 2;
-        new test2().beverages();
-
+        new test2().duiWuRan();
+//        Date date = new java.sql.Date(new java.util.Date().getTime());
+//        System.out.println(date);
 //        String a = "abc";
 //        String b = "a" + "bc";
 //        System.out.println(a == b);
@@ -216,8 +217,23 @@ class test2 {
         }
         System.out.println(m);
     }
-    private void test3() {
+    public void test3() {
+        int count = 0;
+        for (long i = 1000000; i < 10000000; i++) {
+            if (i % 8 == 1 && i % 9 == 1) {
+                count += i;
 
+            }
+        }
+        System.out.println(count);
+    }
+    public void duiWuRan() {
+        List list = new ArrayList<>();
+        list.add(20);
+        System.out.println(list.get(0) instanceof Integer);
+        System.out.println(list.get(0));
+        List<String> ls = list;
+        System.out.println(ls.get(0));
     }
 }
 /**
