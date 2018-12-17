@@ -11,17 +11,20 @@ import java.util.RandomAccess;
 
 public class IO {
     public static void main(String[] args) {
-        new operateCSV().readCsv();
+        String configPath = "C:\\Users\\jax\\Desktop\\CSVtest\\csv.csv";
+       // new operateCSV().writeConfig(configPath, "ddd", new operateCSV().getPath(), 30);
+        new operateCSV().readConfig(configPath);
     }
 }
 
 class operateCSV {
 
-    public void getPath() {
+    public Path getPath() {
         //以当前路径来创建path对象
         Path getPathForNow = Paths.get(".");
         //获取绝对路径
         System.out.println(getPathForNow.toAbsolutePath());
+        return getPathForNow.toAbsolutePath();
     }
     public void operateFile() {
         //move file
@@ -40,24 +43,19 @@ class operateCSV {
 //        }
 
     }
-    public void readCsv() {
-        String path = "C:\\Users\\jax\\Desktop\\CSVtest\\csv.csv";
-        File csv = new File(path);  // CSV文件路径
+
+    //读取配置文件
+    public void readConfig(String configPath) {
+        File csv = new File(configPath);  // CSV文件路径
         if (csv == null) {
             System.out.println("文件不存在！");
         }
         RandomAccessFile br = null;
+        String everyLine = null;
+        String line = null;
         try
         {
-            br = new  RandomAccessFile(path, "r");
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        String line = "";
-        String everyLine = "";
-       // modifyExpiryDate(path, "bbb", "C:\\Users\\jax\\Desktop\\CSVtest", 20);
-        try {
+            br = new  RandomAccessFile(configPath, "r");
             while ((line = br.readLine()) != null)  //读取到的内容给line变量
             {
                 if (line.charAt(0) == '#') {
@@ -65,9 +63,10 @@ class operateCSV {
                 }
                 everyLine = line;
                 String[] temp = everyLine.split(",");
+                //将读出的有效期起始时间转换成日期格式
                 //System.out.println(temp[2]);
                 String strDate = temp[2];
-                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date date=simpleDateFormat.parse(strDate);
                     Date date1 = new Date();
@@ -76,24 +75,24 @@ class operateCSV {
                     compareToNow = compareToNow / 86400000;
                     System.out.println(compareToNow);
                     int expiryDate = Integer.parseInt(temp[3]);
-
-                    //删除过期的文件记录
+                    //删除过期的文件记录并移动指定的文件
                     if (compareToNow >= expiryDate) {
                         long point = br.getFilePointer();
                         System.out.println("line:" + everyLine);
-                        deleteFileContent(path, everyLine, point);
+                        deleteFileContent(configPath, everyLine, point);
                     }
                 } catch(ParseException px) {
                     px.printStackTrace();
                 }
                 System.out.println();
             }
-           // br.close();
-        } catch (IOException e)
-        {
+            br.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    //删除过期的一行记录
     private boolean deleteFileContent(String path, String oldstr, long point) {
         System.out.println("modifyFileContent");
         try {
@@ -113,9 +112,10 @@ class operateCSV {
         return true;
     }
 
-    public void modifyExpiryDate(String parentFilePath, String filePath, String fileName, long newExpiryDate) {
+    //修改文件的有效期
+    public void modifyExpiryDate(String configPath, String filePath, String fileName, long newExpiryDate) {
         try {
-            RandomAccessFile raf = new RandomAccessFile(parentFilePath, "rw");
+            RandomAccessFile raf = new RandomAccessFile(configPath, "rw");
             String line = null;
             while ((line = raf.readLine()) != null) {
                 if (line.contains(fileName) && line.contains(filePath)) {
@@ -124,6 +124,8 @@ class operateCSV {
                         point = point - 2;
                         raf.seek(point);
                     }
+                    //System.out.println("modifyExpiryDate:" + (raf.read() - 48));
+                    //System.out.println("modifyExpiryDate:" + (raf.read() - 48));
                     String ExpiryDate = String.valueOf(newExpiryDate);
                     raf.writeBytes(ExpiryDate);
                 }
@@ -133,6 +135,23 @@ class operateCSV {
             e.printStackTrace();
         }
 
+    }
+
+    //写入新的一行
+    public void writeConfig(String configPath, String fileName, Path filePath, int expiryDate) {
+        File config = new File(configPath);
+        try {
+            RandomAccessFile raf=new RandomAccessFile(configPath,"rw");
+            raf.seek(raf.length());  //将指针移动到文件末尾
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String str = simpleDateFormat.format(date);
+            String content = fileName + "," + filePath + "," + str + "," +expiryDate + "\n";//写入的内容
+            raf.writeBytes(content); //字符串末尾需要换行符
+            raf.close();//关闭文件流
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
