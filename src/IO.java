@@ -12,12 +12,15 @@ import java.util.RandomAccess;
 public class IO {
     public static void main(String[] args) {
         String configPath = "C:\\Users\\jax\\Desktop\\CSVtest\\csv.csv";
+        String historyPath = "C:\\Users\\jax\\Desktop\\CSVtest\\history.csv";
        // new operateCSV().writeConfig(configPath, "ddd", new operateCSV().getPath(), 30);
-        new operateCSV().readConfig(configPath);
+        OperateCSV operateCSV = new OperateCSV();
+        operateCSV.readConfig(configPath, historyPath);
+        operateCSV.deleteAllNullRecord(configPath);
     }
 }
 
-class operateCSV {
+class OperateCSV {
 
     public Path getPath() {
         //以当前路径来创建path对象
@@ -44,8 +47,8 @@ class operateCSV {
 
     }
 
-    //读取配置文件
-    public void readConfig(String configPath) {
+    //读取配置文件并删除过期的记录
+    public void readConfig(String configPath, String historyPath) {
         File csv = new File(configPath);  // CSV文件路径
         if (csv == null) {
             System.out.println("文件不存在！");
@@ -55,9 +58,12 @@ class operateCSV {
         String line = null;
         try
         {
+            long lastPoint = 0;
+            long point = 0;
             br = new  RandomAccessFile(configPath, "r");
             while ((line = br.readLine()) != null)  //读取到的内容给line变量
             {
+                point = br.getFilePointer();
                 if (line.charAt(0) == '#') {
                     continue;
                 }
@@ -69,21 +75,23 @@ class operateCSV {
                 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date date=simpleDateFormat.parse(strDate);
-                    Date date1 = new Date();
+                    Date today = new Date();
                     System.out.println(date);
-                    long compareToNow = date1.getTime() - date.getTime();
-                    compareToNow = compareToNow / 86400000;
-                    System.out.println(compareToNow);
+                    //比较相差的天数并将毫秒转成天数
+                    long compareToToday = today.getTime() - date.getTime();
+                    compareToToday = compareToToday / 86400000;
+                    System.out.println(compareToToday);
                     int expiryDate = Integer.parseInt(temp[3]);
-                    //删除过期的文件记录并移动指定的文件
-                    if (compareToNow >= expiryDate) {
-                        long point = br.getFilePointer();
+                    //删除过期的文件记录加入历史记录并移动指定的文件
+                    if (compareToToday >= expiryDate) {
                         System.out.println("line:" + everyLine);
-                        deleteFileContent(configPath, everyLine, point);
+                        writeHistory(historyPath, everyLine);
+                        deleteOneRecord(configPath, everyLine, lastPoint);
                     }
                 } catch(ParseException px) {
                     px.printStackTrace();
                 }
+                lastPoint = point;
                 System.out.println();
             }
             br.close();
@@ -93,15 +101,18 @@ class operateCSV {
     }
 
     //删除过期的一行记录
-    private boolean deleteFileContent(String path, String oldstr, long point) {
+    private boolean deleteOneRecord(String path, String oldstr, long point) {
         System.out.println("modifyFileContent");
         try {
             RandomAccessFile raf = new RandomAccessFile(path, "rw");
+            if (raf == null) {
+                System.out.println("文件不存在！");
+                return false;
+            }
             int length = oldstr.length();
-            point = point - length - 1;
             while (length > 0) {
                 raf.seek(point);
-                raf.writeBytes("#");
+                raf.writeBytes("#");//将过期的那行记录用#代替
                 point++;
                 length--;
             }
@@ -112,10 +123,42 @@ class operateCSV {
         return true;
     }
 
+    //删除所有的空记录
+    public void deleteAllNullRecord(String configPath) {
+        try {
+            File file = new File(configPath);
+            if (file == null) {
+                System.out.println("文件不存在！");
+            }
+            //读取config的全部内容
+            BufferedReader configReader = new BufferedReader(new FileReader(file));
+            List contentList = new ArrayList();
+            String line = null;
+            while ((line = configReader.readLine()) != null) {
+                contentList.add(line);
+            }
+            //删除空记录后重新写入
+            BufferedWriter configWriter = new BufferedWriter(new FileWriter(file));
+            for (int i = 0; i < contentList.size(); i++) {
+                if ((line = contentList.get(i).toString()).charAt(0) != '#') {
+                    configWriter.write(line);
+                    configWriter.newLine();
+                }
+            }
+            configWriter.flush();
+            configWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //修改文件的有效期
     public void modifyExpiryDate(String configPath, String filePath, String fileName, long newExpiryDate) {
         try {
             RandomAccessFile raf = new RandomAccessFile(configPath, "rw");
+            if (raf == null) {
+                System.out.println("文件不存在！");
+            }
             String line = null;
             while ((line = raf.readLine()) != null) {
                 if (line.contains(fileName) && line.contains(filePath)) {
@@ -142,6 +185,9 @@ class operateCSV {
         File config = new File(configPath);
         try {
             RandomAccessFile raf=new RandomAccessFile(configPath,"rw");
+            if (raf == null) {
+                System.out.println("文件不存在！");
+            }
             raf.seek(raf.length());  //将指针移动到文件末尾
             Date date = new Date();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -153,6 +199,28 @@ class operateCSV {
             e.printStackTrace();
         }
     }
+
+    //将删除的记录加入历史记录
+    public void writeHistory(String historyPath, String line) {
+        File config = new File(historyPath);
+        try {
+            RandomAccessFile raf=new RandomAccessFile(historyPath,"rw");
+            if (raf == null) {
+                System.out.println("文件不存在！");
+            }
+            raf.seek(raf.length());  //将指针移动到文件末尾
+            //将操作时间加入到记录中
+            Date date = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String str = simpleDateFormat.format(date);
+            line = line + "," + str + "\n";
+            raf.writeBytes(line); //字符串末尾需要换行符
+            raf.close();//关闭文件流
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //通过替换#的方式写入新的一行
 }
 
 
